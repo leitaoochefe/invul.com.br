@@ -39,14 +39,17 @@ body {
   animation-delay: 0.4s;
 }
 
-/* LOGO (🔥 AUMENTADA COM CONTROLE) */
+/* LOGO CINEMATOGRÁFICA */
 .logo {
-  width: clamp(380px, 85vw, 1100px); /* aumentei aqui */
-  max-height: 75vh; /* controla pra não cortar o texto */
+  width: clamp(420px, 90vw, 1200px);
+  max-height: 75vh;
   object-fit: contain;
 
   opacity: 0;
-  animation: logoFade 1.6s ease forwards;
+  transform: scale(0.92) translateY(20px);
+  filter: brightness(0.9);
+
+  animation: logoCinematic 1.8s cubic-bezier(.19,1,.22,1) forwards;
   animation-delay: 0.8s;
 }
 
@@ -59,26 +62,31 @@ body {
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
-  animation: fadeIn 0.8s ease forwards;
+  transform: scaleX(0.6);
+
+  animation: lineReveal 1s ease forwards;
   animation-delay: 1.6s;
 }
 
-/* TEXTO */
+/* TEXTO PREMIUM */
 .text {
   font-size: clamp(14px, 1.3vw, 18px);
-  letter-spacing: 8px;
-  color: rgba(255,255,255,0.65);
+  letter-spacing: 14px;
+  color: rgba(255,255,255,0.7);
   text-transform: uppercase;
   font-weight: 400;
 
   opacity: 0;
-  animation: fadeIn 0.8s ease forwards;
+  transform: translateY(10px);
+
+  animation: textReveal 1.2s cubic-bezier(.19,1,.22,1) forwards;
   animation-delay: 1.9s;
 }
 
-/* HOVER */
+/* HOVER ULTRA SUTIL */
 .container:hover .logo {
-  transform: translateY(-2px);
+  transform: scale(1.01) translateY(-2px);
+  filter: brightness(1.05);
 }
 
 /* OVERLAY */
@@ -100,26 +108,55 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes logoFade {
-  to { opacity: 1; }
+@keyframes logoCinematic {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(30px);
+    filter: blur(6px) brightness(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.01) translateY(0);
+    filter: blur(0) brightness(1.05);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    filter: brightness(1);
+  }
 }
 
-@keyframes fadeIn {
-  to { opacity: 1; }
+@keyframes lineReveal {
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    letter-spacing: 22px;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: 14px;
+    transform: translateY(0);
+  }
 }
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { width: 90vw; max-height: 65vh; }
-  .text { letter-spacing: 6px; }
+  .logo { width: 92vw; max-height: 65vh; }
+  .text { letter-spacing: 10px; }
 }
 
 @media (max-width: 600px) {
-  .logo { width: 92vw; max-height: 60vh; }
+  .logo { width: 94vw; max-height: 60vh; }
 
   .text {
     font-size: 13px;
-    letter-spacing: 4px;
+    letter-spacing: 6px;
   }
 
   .line { width: 60px; }
