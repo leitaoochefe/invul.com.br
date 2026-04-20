@@ -78,50 +78,23 @@ font-weight:500;
 
 background:linear-gradient(
 90deg,
-rgba(255,255,255,0.2),
+rgba(255,255,255,0.3),
 rgba(255,255,255,1),
-rgba(255,255,255,0.2)
+rgba(255,255,255,0.3)
 );
 
 background-size:200% auto;
-color:transparent;
 
-background-clip:text;
 -webkit-background-clip:text;
+background-clip:text;
+
+color:transparent;
 
 opacity:0;
 
-animation:fadeIn 1s ease forwards;
-animation-delay:1.9s;
-
-position:relative;
-}
-
-/* brilho */
-
-.text::after{
-
-content:"EM BREVE";
-
-position:absolute;
-left:0;
-top:0;
-
-width:100%;
-
-background:linear-gradient(
-90deg,
-transparent,
-rgba(255,255,255,0.8),
-transparent
-);
-
-background-size:200% auto;
-
--webkit-background-clip:text;
-color:transparent;
-
-animation:shineMove 4s linear infinite;
+animation:
+fadeIn 1s ease forwards 1.9s,
+shineMove 4s linear infinite 2.2s;
 
 }
 
