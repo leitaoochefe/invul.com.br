@@ -15,13 +15,13 @@
 }
 
 body {
-  height: 100vh;
+  min-height: 100vh;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* CONTAINER */
@@ -31,6 +31,9 @@ body {
   align-items: center;
   text-align: center;
 
+  max-width: 95vw;
+  padding: 20px;
+
   opacity: 0;
   animation: fadeInContainer 1.2s ease forwards;
   animation-delay: 0.4s;
@@ -38,8 +41,9 @@ body {
 
 /* LOGO */
 .logo {
-  width: clamp(420px, 90vw, 1200px);
-  display: block;
+  width: clamp(280px, 70vw, 900px);
+  max-height: 60vh;
+  object-fit: contain;
 
   opacity: 0;
   animation: logoFade 1.6s ease forwards;
@@ -106,16 +110,18 @@ body {
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { width: 85vw; }
+  .logo { width: 80vw; }
   .text { letter-spacing: 6px; }
 }
 
 @media (max-width: 600px) {
   .logo { width: 90vw; }
+
   .text {
     font-size: 13px;
     letter-spacing: 4px;
   }
+
   .line { width: 60px; }
 }
 </style>
