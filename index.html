@@ -38,7 +38,7 @@ body {
 /* LOGO */
 .logo {
   width: min(98vw, 1600px);
-  height: calc(100vh - 110px); /* espaço reservado pro texto abaixo */
+  height: calc(100vh - 100px);
   object-fit: contain;
 
   opacity: 0;
@@ -46,11 +46,23 @@ body {
   animation-delay: 0.8s;
 }
 
-/* TEXTO COM BRILHO */
-.shine-text {
-  margin-top: 6px;
-  font-size: clamp(14px, 1.3vw, 20px);
-  letter-spacing: 6px;
+/* LINHA */
+.line {
+  width: 90px;
+  height: 1px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 1.8s;
+}
+
+/* EM BREVE COM BRILHO */
+.text {
+  font-size: clamp(12px, 1.1vw, 16px);
+  letter-spacing: 5px;
   text-transform: uppercase;
   font-weight: 500;
 
@@ -66,33 +78,9 @@ body {
   background-clip: text;
   -webkit-background-clip: text;
 
+  opacity: 0;
   animation: shineMove 3s linear infinite, fadeIn 1s ease forwards;
   animation-delay: 2s;
-}
-
-/* LINHA */
-.line {
-  width: 90px;
-  height: 1px;
-  margin-top: 10px;
-  margin-bottom: 8px;
-  background: linear-gradient(90deg, transparent, #fff, transparent);
-
-  opacity: 0;
-  animation: fadeIn 0.8s ease forwards;
-  animation-delay: 2.2s;
-}
-
-/* EM BREVE */
-.text {
-  font-size: clamp(12px, 1.1vw, 16px);
-  letter-spacing: 5px;
-  color: rgba(255,255,255,0.65);
-  text-transform: uppercase;
-
-  opacity: 0;
-  animation: fadeIn 0.8s ease forwards;
-  animation-delay: 2.4s;
 }
 
 /* HOVER */
@@ -124,23 +112,14 @@ body {
 }
 
 @keyframes shineMove {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 /* RESPONSIVO */
 @media (max-width: 600px) {
   .logo {
-    height: calc(100vh - 100px);
-  }
-
-  .shine-text {
-    font-size: 13px;
-    letter-spacing: 4px;
+    height: calc(100vh - 90px);
   }
 
   .text {
@@ -159,9 +138,6 @@ body {
 
 <div class="container">
   <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-
-  <div class="shine-text">invulnerável</div>
-
   <div class="line"></div>
   <div class="text">EM BREVE</div>
 </div>
