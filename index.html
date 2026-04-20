@@ -78,9 +78,9 @@ font-weight:500;
 
 background:linear-gradient(
 90deg,
-rgba(255,255,255,0.15),
+rgba(255,255,255,0.2),
 rgba(255,255,255,1),
-rgba(255,255,255,0.15)
+rgba(255,255,255,0.2)
 );
 
 background-size:200% auto;
@@ -91,8 +91,37 @@ background-clip:text;
 
 opacity:0;
 
-animation:shineMove 4s linear infinite, fadeIn 1s ease forwards;
+animation:fadeIn 1s ease forwards;
 animation-delay:1.9s;
+
+position:relative;
+}
+
+/* brilho */
+
+.text::after{
+
+content:"EM BREVE";
+
+position:absolute;
+left:0;
+top:0;
+
+width:100%;
+
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,0.8),
+transparent
+);
+
+background-size:200% auto;
+
+-webkit-background-clip:text;
+color:transparent;
+
+animation:shineMove 4s linear infinite;
 
 }
 
@@ -163,9 +192,7 @@ width:55px;
 
 <div class="line"></div>
 
-<div class="text">
-EM BREVE
-</div>
+<div class="text">EM BREVE</div>
 
 </div>
 
