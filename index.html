@@ -21,6 +21,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
 /* CONTAINER */
@@ -31,18 +32,16 @@ body {
   text-align: center;
 
   opacity: 0;
-
   animation: fadeInContainer 1.2s ease forwards;
   animation-delay: 0.4s;
 }
 
-/* LOGO — MAIOR E MAIS IMPACTO */
+/* LOGO */
 .logo {
   width: clamp(420px, 90vw, 1200px);
   display: block;
 
   opacity: 0;
-
   animation: logoFade 1.6s ease forwards;
   animation-delay: 0.8s;
 }
@@ -56,7 +55,6 @@ body {
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
-
   animation: fadeIn 0.8s ease forwards;
   animation-delay: 1.6s;
 }
@@ -70,7 +68,6 @@ body {
   font-weight: 400;
 
   opacity: 0;
-
   animation: fadeIn 0.8s ease forwards;
   animation-delay: 1.9s;
 }
@@ -80,31 +77,34 @@ body {
   transform: translateY(-2px);
 }
 
-/* ANIMAÇÕES */
+/* OVERLAY DE PROTEÇÃO */
+#devtools-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
 
+/* ANIMAÇÕES */
 @keyframes fadeInContainer {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 @keyframes logoFade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 /* RESPONSIVO */
-
 @media (max-width: 900px) {
   .logo { width: 85vw; }
   .text { letter-spacing: 6px; }
@@ -118,21 +118,54 @@ body {
   }
   .line { width: 60px; }
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
   <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-
   <div class="line"></div>
-
   <div class="text">EM BREVE</div>
-
 </div>
+
+<div id="devtools-overlay">
+  acesso restrito
+</div>
+
+<script>
+// 🔒 bloqueio básico
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') e.preventDefault();
+
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) {
+    e.preventDefault();
+  }
+
+  if (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase())) {
+    e.preventDefault();
+  }
+});
+
+// 🔍 tentativa de detectar DevTools
+(function() {
+  const threshold = 160;
+  const overlay = document.getElementById('devtools-overlay');
+
+  setInterval(() => {
+    const widthDiff = window.outerWidth - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
+
+    if (widthDiff > threshold || heightDiff > threshold) {
+      overlay.style.display = 'flex';
+    } else {
+      overlay.style.display = 'none';
+    }
+  }, 500);
+})();
+</script>
 
 </body>
 </html>
