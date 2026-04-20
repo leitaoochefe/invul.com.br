@@ -35,46 +35,15 @@ body {
   height: 100vh;
 }
 
-/* WRAPPER DA LOGO */
-.logo-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
 /* LOGO */
 .logo {
   width: min(98vw, 1600px);
   height: calc(100vh - 100px);
   object-fit: contain;
 
-  display: block;
-
   opacity: 0;
   animation: logoFade 1.6s ease forwards;
   animation-delay: 0.8s;
-}
-
-/* 🔥 EFEITO DE BRILHO PASSANDO */
-.logo-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -150%;
-  width: 60%;
-  height: 100%;
-
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.25) 40%,
-    rgba(255,255,255,0.6) 50%,
-    rgba(255,255,255,0.25) 60%,
-    transparent 100%
-  );
-
-  transform: skewX(-20deg);
-
-  animation: shineLogo 3s ease-in-out infinite;
 }
 
 /* LINHA */
@@ -90,15 +59,27 @@ body {
   animation-delay: 1.8s;
 }
 
-/* TEXTO */
+/* EM BREVE COM BRILHO */
 .text {
   font-size: clamp(12px, 1.1vw, 16px);
   letter-spacing: 5px;
-  color: rgba(255,255,255,0.65);
   text-transform: uppercase;
+  font-weight: 500;
+
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.2) 0%,
+    rgba(255,255,255,1) 50%,
+    rgba(255,255,255,0.2) 100%
+  );
+
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 
   opacity: 0;
-  animation: fadeIn 0.8s ease forwards;
+  animation: shineMove 3s linear infinite, fadeIn 1s ease forwards;
   animation-delay: 2s;
 }
 
@@ -130,13 +111,9 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes shineLogo {
-  0% {
-    left: -150%;
-  }
-  100% {
-    left: 150%;
-  }
+@keyframes shineMove {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 /* RESPONSIVO */
@@ -160,11 +137,7 @@ body {
 <body>
 
 <div class="container">
-
-  <div class="logo-wrapper">
-    <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-  </div>
-
+  <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
   <div class="line"></div>
   <div class="text">EM BREVE</div>
 </div>
