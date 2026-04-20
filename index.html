@@ -34,22 +34,21 @@ body {
   max-width: 95vw;
   padding: 20px;
 
+  transform: scale(1.05); /* leve ganho de impacto */
+
   opacity: 0;
   animation: fadeInContainer 1.2s ease forwards;
   animation-delay: 0.4s;
 }
 
-/* LOGO CINEMATOGRÁFICA */
+/* LOGO (🔥 MAIOR) */
 .logo {
-  width: clamp(420px, 90vw, 1200px);
-  max-height: 75vh;
+  width: clamp(420px, 95vw, 1400px);
+  max-height: 85vh;
   object-fit: contain;
 
   opacity: 0;
-  transform: scale(0.92) translateY(20px);
-  filter: brightness(0.9);
-
-  animation: logoCinematic 1.8s cubic-bezier(.19,1,.22,1) forwards;
+  animation: logoFade 1.6s ease forwards;
   animation-delay: 0.8s;
 }
 
@@ -62,31 +61,26 @@ body {
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
-  transform: scaleX(0.6);
-
-  animation: lineReveal 1s ease forwards;
+  animation: fadeIn 0.8s ease forwards;
   animation-delay: 1.6s;
 }
 
-/* TEXTO PREMIUM */
+/* TEXTO */
 .text {
   font-size: clamp(14px, 1.3vw, 18px);
-  letter-spacing: 14px;
-  color: rgba(255,255,255,0.7);
+  letter-spacing: 8px;
+  color: rgba(255,255,255,0.65);
   text-transform: uppercase;
   font-weight: 400;
 
   opacity: 0;
-  transform: translateY(10px);
-
-  animation: textReveal 1.2s cubic-bezier(.19,1,.22,1) forwards;
+  animation: fadeIn 0.8s ease forwards;
   animation-delay: 1.9s;
 }
 
-/* HOVER ULTRA SUTIL */
+/* HOVER */
 .container:hover .logo {
-  transform: scale(1.01) translateY(-2px);
-  filter: brightness(1.05);
+  transform: translateY(-2px);
 }
 
 /* OVERLAY */
@@ -108,55 +102,26 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes logoCinematic {
-  0% {
-    opacity: 0;
-    transform: scale(0.92) translateY(30px);
-    filter: blur(6px) brightness(0.8);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.01) translateY(0);
-    filter: blur(0) brightness(1.05);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-    filter: brightness(1);
-  }
+@keyframes logoFade {
+  to { opacity: 1; }
 }
 
-@keyframes lineReveal {
-  to {
-    opacity: 1;
-    transform: scaleX(1);
-  }
-}
-
-@keyframes textReveal {
-  0% {
-    opacity: 0;
-    letter-spacing: 22px;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 1;
-    letter-spacing: 14px;
-    transform: translateY(0);
-  }
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { width: 92vw; max-height: 65vh; }
-  .text { letter-spacing: 10px; }
+  .logo { width: 95vw; max-height: 75vh; }
+  .text { letter-spacing: 6px; }
 }
 
 @media (max-width: 600px) {
-  .logo { width: 94vw; max-height: 60vh; }
+  .logo { width: 96vw; max-height: 70vh; }
 
   .text {
     font-size: 13px;
-    letter-spacing: 6px;
+    letter-spacing: 4px;
   }
 
   .line { width: 60px; }
