@@ -92,14 +92,19 @@ animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
 
-/* EMAIL */
+/* EMAIL FOOTER */
 
-.email{
+.footer{
+position:fixed;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+
 display:flex;
 align-items:center;
 gap:10px;
 
-font-size:clamp(12px,1vw,15px);
+font-size:13px;
 letter-spacing:1px;
 
 opacity:0;
@@ -107,14 +112,14 @@ animation:fadeIn 1s ease forwards;
 animation-delay:2.3s;
 }
 
-.email a{
+.footer a{
 color:#fff;
 text-decoration:none;
 opacity:.9;
 transition:.3s;
 }
 
-.email a:hover{
+.footer a:hover{
 opacity:.6;
 }
 
@@ -182,8 +187,9 @@ letter-spacing:5px;
 width:60px;
 }
 
-.email{
-font-size:13px;
+.footer{
+font-size:12px;
+bottom:8px;
 }
 
 }
@@ -203,7 +209,11 @@ font-size:13px;
 EM BREVE
 </div>
 
-<div class="email">
+</div>
+
+<!-- EMAIL RODAPÉ -->
+
+<div class="footer">
 
 <svg class="email-icon" viewBox="0 0 24 24">
 <path d="M2 4h20v16H2V4zm10 9L3 6v12h18V6l-9 7z"/>
@@ -212,8 +222,6 @@ EM BREVE
 <a href="mailto:contato@invul.com.br">
 contato@invul.com.br
 </a>
-
-</div>
 
 </div>
 
