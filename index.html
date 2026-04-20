@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INVUL</title>
 
-<!-- FAVICON -->
 <link rel="icon" href="https://invul.netlify.app/navegador.png">
 <link rel="shortcut icon" href="https://invul.netlify.app/navegador.png">
 <link rel="apple-touch-icon" href="https://invul.netlify.app/navegador.png">
@@ -39,7 +38,6 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 gap:14px;
-
 width:100%;
 height:100vh;
 text-align:center;
@@ -94,40 +92,36 @@ animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
 
-/* FOOTER EMAIL */
+/* EMAIL */
 
-.footer{
-position:fixed;
-bottom:28px;
-left:50%;
-transform:translateX(-50%);
-
+.email{
 display:flex;
 align-items:center;
 gap:10px;
 
-font-size:14px;
+font-size:clamp(12px,1vw,15px);
 letter-spacing:1px;
 
-color:#fff;
-opacity:.9;
+opacity:0;
+animation:fadeIn 1s ease forwards;
+animation-delay:2.3s;
 }
 
-.footer a{
+.email a{
 color:#fff;
 text-decoration:none;
+opacity:.9;
 transition:.3s;
 }
 
-.footer a:hover{
+.email a:hover{
 opacity:.6;
 }
-
-/* ICON */
 
 .email-icon{
 width:18px;
 height:18px;
+fill:#fff;
 opacity:.9;
 }
 
@@ -188,9 +182,8 @@ letter-spacing:5px;
 width:60px;
 }
 
-.footer{
+.email{
 font-size:13px;
-bottom:22px;
 }
 
 }
@@ -210,13 +203,9 @@ bottom:22px;
 EM BREVE
 </div>
 
-</div>
+<div class="email">
 
-<!-- FOOTER EMAIL -->
-
-<div class="footer">
-
-<svg class="email-icon" viewBox="0 0 24 24" fill="white">
+<svg class="email-icon" viewBox="0 0 24 24">
 <path d="M2 4h20v16H2V4zm10 9L3 6v12h18V6l-9 7z"/>
 </svg>
 
@@ -226,13 +215,13 @@ contato@invul.com.br
 
 </div>
 
+</div>
+
 <div id="devtools-overlay">
 acesso restrito
 </div>
 
 <script>
-
-/* BLOQUEIO BÁSICO */
 
 document.addEventListener('contextmenu',e=>e.preventDefault());
 
@@ -247,8 +236,6 @@ if(e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))
 e.preventDefault();
 
 });
-
-/* DETECTAR DEVTOOLS */
 
 (function(){
 
