@@ -8,217 +8,176 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-height:100vh;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-font-family:'Inter',sans-serif;
-overflow:hidden;
-color:white;
+body {
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
 /* CONTAINER */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-.container{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-
-width:100%;
-height:100vh;
-gap:18px;
+  width: 100%;
+  height: 100vh;
 }
 
 /* LOGO */
+.logo {
+  width: min(98vw, 1600px);
+  height: calc(100vh - 100px);
+  object-fit: contain;
 
-.logo{
-width:min(92vw,1400px);
-height:auto;
-object-fit:contain;
-
-opacity:0;
-animation:logoFade 1.4s ease forwards;
-animation-delay:0.6s;
-
-transition:transform .4s ease;
+  opacity: 0;
+  animation: logoFade 1.6s ease forwards;
+  animation-delay: 0.8s;
 }
 
 /* LINHA */
+.line {
+  width: 90px;
+  height: 1px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
 
-.line{
-width:70px;
-height:1px;
-
-background:linear-gradient(90deg,transparent,#ffffff90,transparent);
-
-opacity:0;
-animation:fadeIn .8s ease forwards;
-animation-delay:1.6s;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 1.8s;
 }
 
-/* TEXTO */
+/* EM BREVE COM BRILHO */
+.text {
+  font-size: clamp(12px, 1.1vw, 16px);
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  font-weight: 500;
 
-.text{
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.2) 0%,
+    rgba(255,255,255,1) 50%,
+    rgba(255,255,255,0.2) 100%
+  );
 
-font-size:12px;
-letter-spacing:6px;
-text-transform:uppercase;
-font-weight:500;
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 
-background:linear-gradient(
-90deg,
-rgba(255,255,255,0.3),
-rgba(255,255,255,1),
-rgba(255,255,255,0.3)
-);
-
-background-size:200% auto;
-
--webkit-background-clip:text;
-background-clip:text;
-
-color:transparent;
-
-opacity:0;
-
-animation:
-fadeIn 1s ease forwards 1.9s,
-shineMove 4s linear infinite 2.2s;
-
+  opacity: 0;
+  animation: shineMove 3s linear infinite, fadeIn 1s ease forwards;
+  animation-delay: 2s;
 }
 
 /* HOVER */
-
-.container:hover .logo{
-transform:translateY(-3px) scale(1.01);
+.container:hover .logo {
+  transform: translateY(-2px);
 }
 
 /* OVERLAY */
-
-#devtools-overlay{
-position:fixed;
-inset:0;
-background:#000;
-color:#fff;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:9999;
-
-font-size:13px;
-letter-spacing:3px;
+#devtools-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-size: 14px;
+  letter-spacing: 2px;
 }
 
 /* ANIMAÇÕES */
-
-@keyframes logoFade{
-to{opacity:1;}
+@keyframes logoFade {
+  to { opacity: 1; }
 }
 
-@keyframes fadeIn{
-to{opacity:1;}
+@keyframes fadeIn {
+  to { opacity: 1; }
 }
 
-@keyframes shineMove{
-0%{background-position:-200% center;}
-100%{background-position:200% center;}
+@keyframes shineMove {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
-/* MOBILE */
+/* RESPONSIVO */
+@media (max-width: 600px) {
+  .logo {
+    height: calc(100dvh - 140px); /* CORREÇÃO AQUI */
+  }
 
-@media(max-width:600px){
+  .text {
+    font-size: 11px;
+    letter-spacing: 4px;
+  }
 
-.logo{
-width:92vw;
+  .line {
+    width: 60px;
+  }
 }
-
-.text{
-font-size:11px;
-letter-spacing:5px;
-}
-
-.line{
-width:55px;
-}
-
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
-<img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-
-<div class="line"></div>
-
-<div class="text">EM BREVE</div>
-
+  <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
+  <div class="line"></div>
+  <div class="text">EM BREVE</div>
 </div>
 
 <div id="devtools-overlay">
-ACESSO RESTRITO
+  acesso restrito
 </div>
 
 <script>
+// 🔒 bloqueio básico
+document.addEventListener('contextmenu', e => e.preventDefault());
 
-/* BLOQUEIO */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F12') e.preventDefault();
 
-document.addEventListener('contextmenu',e=>e.preventDefault());
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) {
+    e.preventDefault();
+  }
 
-document.addEventListener('keydown',function(e){
-
-if(e.key==='F12') e.preventDefault();
-
-if(e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())){
-e.preventDefault();
-}
-
-if(e.ctrlKey && ['U','S'].includes(e.key.toUpperCase())){
-e.preventDefault();
-}
-
+  if (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase())) {
+    e.preventDefault();
+  }
 });
 
-/* DETECTAR DEVTOOLS */
+// 🔍 detectar DevTools
+(function() {
+  const threshold = 160;
+  const overlay = document.getElementById('devtools-overlay');
 
-(function(){
+  setInterval(() => {
+    const widthDiff = window.outerWidth - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
 
-const threshold=160;
-const overlay=document.getElementById('devtools-overlay');
-
-setInterval(()=>{
-
-const widthDiff=window.outerWidth-window.innerWidth;
-const heightDiff=window.outerHeight-window.innerHeight;
-
-if(widthDiff>threshold || heightDiff>threshold){
-
-overlay.style.display='flex';
-
-}else{
-
-overlay.style.display='none';
-
-}
-
-},500);
-
+    if (widthDiff > threshold || heightDiff > threshold) {
+      overlay.style.display = 'flex';
+    } else {
+      overlay.style.display = 'none';
+    }
+  }, 500);
 })();
-
 </script>
 
 </body>
