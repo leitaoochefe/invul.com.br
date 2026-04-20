@@ -23,7 +23,7 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* CONTAINER COMEÇA INVISÍVEL */
+/* CONTAINER */
 .container {
   display: flex;
   flex-direction: column;
@@ -36,9 +36,9 @@ body {
   animation-delay: 0.4s;
 }
 
-/* LOGO — REVELAÇÃO LIMPA */
+/* LOGO — MAIOR E MAIS IMPACTO */
 .logo {
-  width: clamp(300px, 82vw, 1000px);
+  width: clamp(420px, 90vw, 1200px);
   display: block;
 
   opacity: 0;
@@ -49,10 +49,10 @@ body {
 
 /* LINHA */
 .line {
-  width: 50px;
+  width: 80px;
   height: 1px;
-  margin-top: 16px;
-  margin-bottom: 12px;
+  margin-top: 20px;
+  margin-bottom: 16px;
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
@@ -63,9 +63,9 @@ body {
 
 /* TEXTO */
 .text {
-  font-size: 12px;
-  letter-spacing: 6px;
-  color: rgba(255,255,255,0.55);
+  font-size: clamp(14px, 1.2vw, 18px);
+  letter-spacing: 8px;
+  color: rgba(255,255,255,0.6);
   text-transform: uppercase;
   font-weight: 400;
 
@@ -75,7 +75,7 @@ body {
   animation-delay: 1.9s;
 }
 
-/* HOVER SUPER SUTIL */
+/* HOVER SUTIL */
 .container:hover .logo {
   transform: translateY(-2px);
 }
@@ -89,10 +89,10 @@ body {
 }
 
 @keyframes logoFade {
-  0% {
+  from {
     opacity: 0;
   }
-  100% {
+  to {
     opacity: 1;
   }
 }
@@ -105,26 +105,18 @@ body {
 
 /* RESPONSIVO */
 
-@media (min-width: 1600px) {
-  .logo { width: 900px; }
-}
-
-@media (max-width: 1400px) {
-  .logo { width: 780px; }
-}
-
 @media (max-width: 900px) {
-  .logo { width: 70vw; }
-  .text { letter-spacing: 5px; }
+  .logo { width: 85vw; }
+  .text { letter-spacing: 6px; }
 }
 
 @media (max-width: 600px) {
-  .logo { width: 85vw; }
+  .logo { width: 90vw; }
   .text {
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 4px;
   }
-  .line { width: 40px; }
+  .line { width: 60px; }
 }
 
 </style>
@@ -134,7 +126,7 @@ body {
 
 <div class="container">
 
-  <img class="logo" src="https://invul.netlify.app/invul.png">
+  <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
 
   <div class="line"></div>
 
