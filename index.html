@@ -6,7 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INVUL</title>
 
-<!-- FAVICON -->
+<!-- FAVICON OTIMIZADO -->
+<link rel="icon" type="image/png" sizes="512x512" href="https://invul.netlify.app/navegador.png">
+<link rel="icon" type="image/png" sizes="192x192" href="https://invul.netlify.app/navegador.png">
+<link rel="icon" type="image/png" sizes="96x96" href="https://invul.netlify.app/navegador.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://invul.netlify.app/navegador.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://invul.netlify.app/navegador.png">
 
@@ -38,7 +41,6 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 gap:14px;
-
 width:100%;
 height:100vh;
 text-align:center;
@@ -50,7 +52,6 @@ text-align:center;
 width:min(96vw,1600px);
 max-height:78vh;
 object-fit:contain;
-
 opacity:0;
 animation:logoFade 1.4s ease forwards;
 animation-delay:.6s;
@@ -62,7 +63,6 @@ animation-delay:.6s;
 width:80px;
 height:1px;
 background:linear-gradient(90deg,transparent,#fff,transparent);
-
 opacity:0;
 animation:fadeIn .8s ease forwards;
 animation-delay:1.4s;
@@ -111,7 +111,6 @@ display:none;
 align-items:center;
 justify-content:center;
 z-index:9999;
-
 font-size:13px;
 letter-spacing:2px;
 text-transform:uppercase;
@@ -204,13 +203,9 @@ const widthDiff=window.outerWidth-window.innerWidth;
 const heightDiff=window.outerHeight-window.innerHeight;
 
 if(widthDiff>threshold || heightDiff>threshold){
-
 overlay.style.display='flex';
-
 }else{
-
 overlay.style.display='none';
-
 }
 
 },500);
