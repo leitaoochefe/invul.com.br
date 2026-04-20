@@ -39,10 +39,10 @@ body {
   animation-delay: 0.4s;
 }
 
-/* LOGO */
+/* LOGO (🔥 AUMENTADA COM CONTROLE) */
 .logo {
-  width: clamp(280px, 70vw, 900px);
-  max-height: 60vh;
+  width: clamp(380px, 85vw, 1100px); /* aumentei aqui */
+  max-height: 75vh; /* controla pra não cortar o texto */
   object-fit: contain;
 
   opacity: 0;
@@ -52,10 +52,10 @@ body {
 
 /* LINHA */
 .line {
-  width: 80px;
+  width: 90px;
   height: 1px;
-  margin-top: 20px;
-  margin-bottom: 16px;
+  margin-top: 24px;
+  margin-bottom: 18px;
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
@@ -65,9 +65,9 @@ body {
 
 /* TEXTO */
 .text {
-  font-size: clamp(14px, 1.2vw, 18px);
+  font-size: clamp(14px, 1.3vw, 18px);
   letter-spacing: 8px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.65);
   text-transform: uppercase;
   font-weight: 400;
 
@@ -76,12 +76,12 @@ body {
   animation-delay: 1.9s;
 }
 
-/* HOVER SUTIL */
+/* HOVER */
 .container:hover .logo {
   transform: translateY(-2px);
 }
 
-/* OVERLAY DE PROTEÇÃO */
+/* OVERLAY */
 #devtools-overlay {
   position: fixed;
   inset: 0;
@@ -110,12 +110,12 @@ body {
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { width: 80vw; }
+  .logo { width: 90vw; max-height: 65vh; }
   .text { letter-spacing: 6px; }
 }
 
 @media (max-width: 600px) {
-  .logo { width: 90vw; }
+  .logo { width: 92vw; max-height: 60vh; }
 
   .text {
     font-size: 13px;
@@ -155,7 +155,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// 🔍 tentativa de detectar DevTools
+// 🔍 detectar DevTools
 (function() {
   const threshold = 160;
   const overlay = document.getElementById('devtools-overlay');
