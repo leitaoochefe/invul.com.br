@@ -15,13 +15,13 @@
 }
 
 body {
-  min-height: 100vh;
+  height: 100vh; /* trava altura */
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+  overflow: hidden; /* 🔥 remove qualquer scroll */
 }
 
 /* CONTAINER */
@@ -31,20 +31,16 @@ body {
   align-items: center;
   text-align: center;
 
-  max-width: 95vw;
-  padding: 20px;
+  width: 100%;
+  height: 100%; /* ocupa toda a tela */
 
-  transform: scale(1.05); /* leve ganho de impacto */
-
-  opacity: 0;
-  animation: fadeInContainer 1.2s ease forwards;
-  animation-delay: 0.4s;
+  justify-content: center;
 }
 
-/* LOGO (🔥 MAIOR) */
+/* LOGO (MAXIMIZADA SEM QUEBRAR) */
 .logo {
-  width: clamp(420px, 95vw, 1400px);
-  max-height: 85vh;
+  width: min(95vw, 1400px);
+  max-height: 72vh; /* 🔥 ponto ideal pra não gerar scroll */
   object-fit: contain;
 
   opacity: 0;
@@ -56,8 +52,8 @@ body {
 .line {
   width: 90px;
   height: 1px;
-  margin-top: 24px;
-  margin-bottom: 18px;
+  margin-top: 18px;
+  margin-bottom: 14px;
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
@@ -67,11 +63,10 @@ body {
 
 /* TEXTO */
 .text {
-  font-size: clamp(14px, 1.3vw, 18px);
-  letter-spacing: 8px;
+  font-size: clamp(13px, 1.2vw, 17px);
+  letter-spacing: 6px;
   color: rgba(255,255,255,0.65);
   text-transform: uppercase;
-  font-weight: 400;
 
   opacity: 0;
   animation: fadeIn 0.8s ease forwards;
@@ -98,10 +93,6 @@ body {
 }
 
 /* ANIMAÇÕES */
-@keyframes fadeInContainer {
-  to { opacity: 1; }
-}
-
 @keyframes logoFade {
   to { opacity: 1; }
 }
@@ -112,15 +103,14 @@ body {
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { width: 95vw; max-height: 75vh; }
-  .text { letter-spacing: 6px; }
+  .logo { max-height: 68vh; }
 }
 
 @media (max-width: 600px) {
-  .logo { width: 96vw; max-height: 70vh; }
+  .logo { max-height: 64vh; }
 
   .text {
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 4px;
   }
 
