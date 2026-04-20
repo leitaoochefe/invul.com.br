@@ -25,7 +25,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* CONTAINER CENTRAL ABSOLUTO */
+/* CONTAINER */
 
 .container{
 display:flex;
@@ -39,11 +39,11 @@ height:100vh;
 text-align:center;
 }
 
-/* LOGO */
+/* LOGO (MAIOR E MAIS DOMINANTE) */
 
 .logo{
-width:min(92vw,1400px);
-max-height:72vh;
+width:min(96vw,1600px);
+max-height:78vh;
 object-fit:contain;
 
 opacity:0;
@@ -88,14 +88,14 @@ animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
 
-/* HOVER ULTRA SUAVE */
+/* HOVER SUAVE */
 
 .container:hover .logo{
 transform:translateY(-1px);
 transition:.4s ease;
 }
 
-/* OVERLAY */
+/* OVERLAY DEVTOOLS */
 
 #devtools-overlay{
 position:fixed;
@@ -127,13 +127,13 @@ to{opacity:1;}
 100%{background-position:200% center;}
 }
 
-/* RESPONSIVO MOBILE */
+/* MOBILE */
 
 @media (max-width:600px){
 
 .logo{
-width:92vw;
-max-height:62vh;
+width:96vw;
+max-height:68vh;
 }
 
 .text{
