@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastrar Usuário</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<!-- bcryptjs -->
+<script src="https://unpkg.com/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+
+<!-- CSS -->
+<style>
+  :root {
+    --primary-color: #0a66c2;
+    --primary-hover-color: #004182;
+    --background-light: #1a1a2e;
+    --background-white: #16213e;
+    --text-dark: #ffffff;
+    --text-medium: #b8b8b8;
+    --border-light: #2a2a3a;
+    --shadow-light: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+  }
+
+  body { background-color: var(--background-light); font-family: 'Inter', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: var(--text-dark); }
+
+  .login-container { 
+    width: 60vw; max-width: 900px; min-width: 300px; 
+    background-color: var(--background-white); margin: auto; padding: 5vh 4vw; 
+    border-radius: 20px; box-shadow: var(--shadow-light); display: none; flex-direction: column; justify-content: center; 
+  }
+
+  h2 { text-align:center; color: var(--text-dark); margin-bottom:30px; font-size:2.3rem; }
+  label { display:block; margin-top:20px; color: var(--text-medium); font-weight:500; margin-bottom:8px; font-size:0.95rem; }
+  input { width:100%; padding:14px 18px; border:1px solid var(--border-light); border-radius:12px; box-sizing:border-box; font-size:1rem; color: var(--text-dark); background-color: rgba(255,255,255,0.1); margin-bottom:10px; }
+  input:focus { outline:none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(10,102,194,0.3); background-color: rgba(255,255,255,0.15); }
+  .buttons { margin-top:30px; text-align:center; display:flex; justify-content:center; gap:15px; }
+  button { background: var(--primary-color); color:white; padding:14px 30px; border:none; border-radius:12px; cursor:pointer; font-size:1rem; font-weight:600; box-shadow: var(--shadow-light); transition:0.3s; }
+  button:hover { background: var(--primary-hover-color); transform: scale(1.02); }
+
+  footer { position:fixed; bottom:4px; left:50%; transform: translateX(-50%); font-size:9px; color:#888; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; opacity:0.75; user-select:none; display: none; }
+</style>
+
+<!-- VERIFICAÇÃO DE AUTH E REDIRECIONAMENTO -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCdB4pI610z1rplKmfAHct7CmGD0vmBg3U",
+    authDomain: "almoxarifadobotucatu-5e03d.firebaseapp.com",
+    projectId: "almoxarifadobotucatu-5e03d",
+    storageBucket: "almoxarifadobotucatu-5e03d.firebasestorage.app",
+    messagingSenderId: "828951000388",
+    appId: "1:828951000388:web:06dbe3cb5764872e7b1311"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) {
+      // Não logado → redireciona imediatamente
+      location.replace("https://almoxarifadobotucatu.netlify.app/paineldecontrole.html");
+    } else {
+      // Logado → mostra conteúdo
+      document.querySelector(".login-container").style.display = "flex";
+      document.querySelector("footer").style.display = "block";
+    }
+  });
+</script>
+
+</head>
+<body>
+
+<div class="login-container">
+  <h2>Cadastrar Usuário</h2>
+  <form id="cadastroForm">
+    <label for="login">Login:</label>
+    <input type="text" id="login" required autocomplete="off">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" required autocomplete="off">
+    <label for="senha">Senha (padrão):</label>
+    <input type="password" id="senha" required autocomplete="new-password">
+    <div class="buttons">
+      <button type="submit">Cadastrar</button>
+    </div>
+  </form>
+</div>
+
+<footer>© 2025. Todos os direitos reservados.</footer>
+
+<script>
+  const db = firebase.firestore();
+  const bcryptLib = window.bcrypt || (window.dcodeIO && window.dcodeIO.bcrypt);
+  if (!bcryptLib) console.error("bcryptjs não foi carregado.");
+
+  const form = document.getElementById("cadastroForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const login = document.getElementById("login").value.trim();
+    const nome  = document.getElementById("nome").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+
+    if (!login || !nome || !senha) return alert("Preencha todos os campos!");
+    if (!bcryptLib) return alert("Não foi possível carregar o bcryptjs.");
+
+    try {
+      const docRef  = db.collection("usuarios").doc(login);
+      const docSnap = await docRef.get();
+
+      if (docSnap.exists) return alert("⚠️ Já existe um usuário com este login!");
+
+      const senhaHash = bcryptLib.hashSync(senha, 10);
+      await docRef.set({
+        nome: nome,
+        senhaHash: senhaHash,
+        precisaTrocar: true,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("✅ Usuário cadastrado com sucesso!");
+      form.reset();
+    } catch (err) {
+      console.error("Erro ao cadastrar:", err);
+      alert("Erro ao cadastrar: " + err);
+    }
+  });
+
+  // Bloqueios opcionais
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", function(e){
+    if (["F12"].includes(e.key) || (e.ctrlKey && ["u","s","p"].includes(e.key.toLowerCase()))) e.preventDefault();
+  });
+</script>
+</body>
+</html>

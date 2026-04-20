@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INVUL</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+}
+
+/* CONTAINER COMEÇA INVISÍVEL */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  opacity: 0;
+
+  animation: fadeInContainer 1.2s ease forwards;
+  animation-delay: 0.4s;
+}
+
+/* LOGO — REVELAÇÃO LIMPA */
+.logo {
+  width: clamp(300px, 82vw, 1000px);
+  display: block;
+
+  opacity: 0;
+
+  animation: logoFade 1.6s ease forwards;
+  animation-delay: 0.8s;
+}
+
+/* LINHA */
+.line {
+  width: 50px;
+  height: 1px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+
+  opacity: 0;
+
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 1.6s;
+}
+
+/* TEXTO */
+.text {
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  font-weight: 400;
+
+  opacity: 0;
+
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 1.9s;
+}
+
+/* HOVER SUPER SUTIL */
+.container:hover .logo {
+  transform: translateY(-2px);
+}
+
+/* ANIMAÇÕES */
+
+@keyframes fadeInContainer {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes logoFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* RESPONSIVO */
+
+@media (min-width: 1600px) {
+  .logo { width: 900px; }
+}
+
+@media (max-width: 1400px) {
+  .logo { width: 780px; }
+}
+
+@media (max-width: 900px) {
+  .logo { width: 70vw; }
+  .text { letter-spacing: 5px; }
+}
+
+@media (max-width: 600px) {
+  .logo { width: 85vw; }
+  .text {
+    font-size: 11px;
+    letter-spacing: 4px;
+  }
+  .line { width: 40px; }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <img class="logo" src="https://almoxarifadobotucatu.netlify.app/invul.png" alt="INVUL Logo">
+
+  <div class="line"></div>
+
+  <div class="text">EM BREVE</div>
+
+</div>
+
+</body>
+</html>

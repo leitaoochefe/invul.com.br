@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Proteção -->
+  <script src="/protege-pagina.js"></script>
+  <script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) || 
+        (e.ctrlKey && e.key.toUpperCase() === 'U') || 
+        (e.ctrlKey && e.key.toUpperCase() === 'S') 
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    (function() {
+      const threshold = 160;
+      setInterval(function() {
+        if (window.outerWidth - window.innerWidth > threshold || 
+            window.outerHeight - window.innerHeight > threshold) {
+          window.location.href = "/acesso-negado.html";
+        }
+      }, 500);
+    })();
+
+    const nomesMasculinos = ["João","Pedro","Lucas","Mateus","Gabriel","Rafael","Felipe","Bruno","Gustavo","Leonardo","Carlos","Daniel","Thiago","Marcelo","André","Rodrigo","Eduardo","Vinicius","Fernando","Alexandre","Diego","Murilo","Vitor","Samuel","Caio","Regez","Reges","Ricardo","Leandro","Hugo","Paulo","Fábio"];
+    const nomesFemininos = ["Maria","Ana","Juliana","Fernanda","Patricia","Camila","Larissa","Mariana","Amanda","Bianca","Bruna","Carla","Aline","Renata","Gabriela","Letícia","Sofia","Isabela","Raquel","Daniela","Júlia","Laura","Clara","Rafaela","Natália","Yasmin","Alice","Emanuelle","Vanessa"];
+    const sufixosFemininos = ["a","e","ina","ela","ida","isa","ia","y","ada","ama","amah","ara","ora","ava"];
+    const sufixosMasculinos = ["o","el","or","io","an","as","os","im","u","ino","ivo","us"];
+
+    function obterPrimeiroNome(nomeCompleto) {
+      return nomeCompleto.split(" ")[0].trim();
+    }
+
+    function detectarGenero(primeiroNome) {
+      if (nomesFemininos.includes(primeiroNome)) return "Bem-vinda";
+      if (nomesMasculinos.includes(primeiroNome)) return "Bem-vindo";
+      const nomeMinusculo = primeiroNome.toLowerCase();
+      for (let suf of sufixosFemininos) if (nomeMinusculo.endsWith(suf)) return "Bem-vinda";
+      for (let suf of sufixosMasculinos) if (nomeMinusculo.endsWith(suf)) return "Bem-vindo";
+      return "Bem-vindo(a)";
+    }
+
+    window.onload = function() {
+      let nomeCompleto = localStorage.getItem("nomeUsuario") || localStorage.getItem("usuarioLogado") || "Usuário";
+      if (typeof nomeCompleto === "string" && nomeCompleto.startsWith("{")) {
+        try { nomeCompleto = JSON.parse(nomeCompleto).name || "Usuário"; }
+        catch(e) { nomeCompleto = "Usuário"; }
+      }
+      const primeiroNome = obterPrimeiroNome(nomeCompleto);
+      const saudacao = detectarGenero(primeiroNome);
+      document.getElementById("usuario-logado").innerText = `${saudacao}, ${primeiroNome}!`;
+      localStorage.setItem("nomeUsuario", nomeCompleto);
+      localStorage.setItem("usuarioLogado", JSON.stringify({ name: nomeCompleto }));
+    }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #0a66c2;
+      --primary-hover-color: #004182;
+      --primary-extra-color: #1db954;
+      --background-light: #1a1a2e;
+      --background-white: #16213e;
+      --text-dark: #ffffff;
+      --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --border-light: rgba(255,255,255,0.25);
+    }
+
+    body {
+      background-color: var(--background-light);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    header {
+      position: fixed;
+      top: 10px;        /* alinhado */
+      left: 20px;
+      font-size: 16px;
+      color: #ddd;
+      font-weight: 500;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 16px;  /* padding igual ao botão */
+      border-radius: 8px;
+      box-shadow: var(--shadow-light);
+      user-select: none;
+      z-index: 1000;
+    }
+
+.corner-btn {
+  position: fixed;
+  top: 10px;
+  z-index: 1000;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 0.8px solid rgba(24,144,255,0.65); /* azul vivo translúcido, mais delicado */
+  background: rgba(0,0,0,0.15);
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 0 0 0.6px rgba(24,144,255,0.35);
+}
+
+.corner-left { left: 14px; }
+.corner-right { right: 14px; }
+
+.corner-btn:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(10,132,255,0.85); /* hover azul mais vivo */
+  transform: translateY(-1px);
+}
+
+    }
+    @media (max-width: 768px) {
+      .corner-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        top: 10px;
+      }
+      .corner-left { left: 10px; }
+      .corner-right { right: 10px; }
+    }
+
+    .container {
+      background-color: var(--background-white);
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-light);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      transform: translateY(-80px);
+    }
+
+    h2 { font-weight: 700; font-size: 2rem; margin: 0; }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-block { text-align: center; }
+    .btn-block i {
+      font-size: 60px;
+      display: block;
+      margin-bottom: 8px;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.4));
+    }
+    .btn-block:hover i {
+      transform: scale(1.15);
+      filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.6)) brightness(1.3);
+    }
+
+    button {
+      background: var(--primary-color);
+      color: white;
+      padding: 16px 36px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.4s;
+      box-shadow: var(--shadow-light);
+    }
+    button:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(270deg, var(--primary-color), var(--primary-hover-color), var(--primary-extra-color));
+      background-size: 600% 600%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 30px; transform: translateY(-60px); }
+      .buttons { flex-direction: column; gap: 15px; }
+      h2 { font-size: 1.8rem; }
+      button { font-size: 1.1rem; padding: 14px 30px; }
+      .corner-btn { top: 10px; right: 10px; }
+    }
+
+    footer {
+      position: fixed;
+      bottom: 8px;
+      right: 12px;
+      font-size: 9px;
+      color: #888888;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+<body>
+  <button id="btnSair" class="corner-btn corner-right" aria-label="Sair" title="Sair">Sair ✕</button>
+  <header id="usuario-logado"></header>
+
+  <div class="container">
+    <h2>Central de Pedidos</h2>
+    <div class="buttons">
+      <div class="btn-block">
+        <i class="ri-add-circle-fill" style="color:#FF9800;"></i>
+        <button type="button" onclick="window.location.href='/pedidoextra/'">Pedido Extra</button>
+      </div>
+      <div class="btn-block">
+        <i class="ri-calendar-fill" style="color:#4CAF50;"></i>
+        <button type="button" onclick="window.location.href='/pedidomensal/'">Pedido Mensal</button>
+      </div>
+      <div class="btn-block">
+        <i class="ri-calculator-fill" style="color:#2196F3;"></i>
+        <button type="button" onclick="window.location.href='/calculadora/'">Calculadora</button>
+      </div>
+    </div>
+  </div>
+  
+  <footer style="position: fixed; bottom: 4px; right: 4px; font-size: 9px; color: #888; background: transparent; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; opacity: 0.75; user-select: none;">
+      © 2025. Todos os direitos reservados.
+
+  <script>
+    (function(){
+      var sair = document.getElementById("btnSair");
+      if (sair) {
+        sair.addEventListener("click", function(e){
+          e.preventDefault();
+          try { 
+            localStorage.removeItem("loggedInUser");
+            sessionStorage.clear();
+          } catch(_) {}
+          window.location.replace("/");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

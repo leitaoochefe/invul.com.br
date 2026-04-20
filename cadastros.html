@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang='pt-BR'>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Usuários Cadastrados</title>
+<link rel="icon" type="image/png" sizes="32x32" href="">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<!-- bcryptjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+
+<style>
+  :root {
+    --primary-extra-color: #1db954;
+    --primary-color: #0a66c2;
+    --primary-hover-color: #004182;
+    --danger-color: #e53e3e;
+    --danger-hover-color: #c53030;
+    --background-light: #1a1a2e;
+    --background-white: #16213e;
+    --text-dark: #ffffff;
+    --text-medium: #b8b8b8;
+    --border-light: #2a2a3a;
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  body {
+    background-color: var(--background-light);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: none; /* 🔒 escondido até autenticação */
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+    color: var(--text-dark);
+  }
+
+  .container {
+    width: 90vw;
+    margin-top: 40px;
+    background-color: var(--background-white);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-light);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  .search-box {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .search-box input {
+    width: 60%;
+    padding: 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--text-dark);
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+  }
+
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.3);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+  }
+
+  tr:hover {
+    background-color: rgba(255,255,255,0.05);
+  }
+
+  button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    color: white;
+  }
+
+  .btn-edit {
+    background: var(--primary-color);
+  }
+  .btn-edit:hover {
+    background: var(--primary-hover-color);
+  }
+
+  .btn-delete {
+    background: var(--danger-color);
+  }
+  .btn-delete:hover {
+    background: var(--danger-hover-color);
+  }
+
+  footer {
+    position: fixed;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: #888;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    opacity: 0.75;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Usuários Cadastrados</h2>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="🔍 Buscar por login ou nome...">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Login</th>
+        <th>Nome</th>
+        <th>Senha</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="usuariosTabela"></tbody>
+  </table>
+</div>
+
+<footer>© 2025. Todos os direitos reservados.</footer>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCdB4pI610z1rplKmfAHct7CmGD0vmBg3U",
+    authDomain: "almoxarifadobotucatu-5e03d.firebaseapp.com",
+    projectId: "almoxarifadobotucatu-5e03d",
+    storageBucket: "almoxarifadobotucatu-5e03d.firebasestorage.app",
+    messagingSenderId: "828951000388",
+    appId: "1:828951000388:web:06dbe3cb5764872e7b1311"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const tabela = document.getElementById("usuariosTabela");
+  const searchInput = document.getElementById("searchInput");
+  let usuariosCache = [];
+
+  async function carregarUsuarios(){
+    try {
+      const snapshot = await db.collection("usuarios").get();
+      usuariosCache = [];
+      snapshot.forEach(doc => {
+        usuariosCache.push({ id: doc.id, ...doc.data() });
+      });
+      renderizarTabela(usuariosCache);
+    } catch(err){
+      alert("Erro ao carregar usuários: " + err);
+    }
+  }
+
+  function renderizarTabela(lista){
+    tabela.innerHTML = "";
+    lista.forEach(u => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${u.id}</td>
+        <td><input type="text" value="${u.nome || ''}" data-field="nome" data-id="${u.id}" style="width:90%;"></td>
+        <td><input type="password" placeholder="Nova senha" data-field="senha" data-id="${u.id}" style="width:90%;"></td>
+        <td>
+          <button class="btn-edit" onclick="editarUsuario('${u.id}')">Salvar</button>
+          <button class="btn-delete" onclick="excluirUsuario('${u.id}')">Excluir</button>
+        </td>
+      `;
+      tabela.appendChild(tr);
+    });
+  }
+
+  searchInput.addEventListener("input", function(){
+    const termo = this.value.toLowerCase();
+    const filtrados = usuariosCache.filter(u => 
+      u.id.toLowerCase().includes(termo) ||
+      (u.nome && u.nome.toLowerCase().includes(termo))
+    );
+    renderizarTabela(filtrados);
+  });
+
+  async function editarUsuario(id){
+    try {
+      const nome = document.querySelector(`input[data-field='nome'][data-id='${id}']`).value;
+      const senha = document.querySelector(`input[data-field='senha'][data-id='${id}']`).value;
+
+      let updateData = { nome };
+      if(senha && senha.trim() !== ""){
+        // gera hash da senha nova
+        const senhaHash = await bcrypt.hash(senha, 10);
+        updateData.senhaHash = senhaHash;
+      }
+
+      await db.collection("usuarios").doc(id).set(updateData, { merge: true });
+
+      alert("✅ Usuário atualizado com sucesso!");
+      carregarUsuarios();
+    } catch(err){
+      alert("Erro ao atualizar usuário: " + err);
+    }
+  }
+
+  async function excluirUsuario(id){
+    if(confirm("⚠️ Deseja realmente excluir este usuário?")){
+      try {
+        await db.collection("usuarios").doc(id).delete();
+        alert("🗑️ Usuário excluído!");
+        carregarUsuarios();
+      } catch(err){
+        alert("Erro ao excluir usuário: " + err);
+      }
+    }
+  }
+
+  carregarUsuarios();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.replace("paineldecontrole.html");
+    } else {
+      document.body.style.display = "flex";
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("contextmenu", event => event.preventDefault());
+  document.addEventListener("keydown", function (event) {
+    if(event.key==="F12" || event.keyCode===123){ event.preventDefault(); }
+    if((event.ctrlKey && event.key.toLowerCase()==='s') || (event.ctrlKey && event.key.toLowerCase()==='u')){ event.preventDefault(); }
+    if(event.ctrlKey && event.key==="p"){ event.preventDefault(); }
+    if(event.ctrlKey && event.shiftKey && ["I","J","C"].includes(event.key.toUpperCase())){ event.preventDefault(); }
+  });
+</script>
+
+<script src="/protege-pagina.js"></script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard de Pedidos Extras</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Inter',Arial,sans-serif; background:#1a1a2e; color:#fff; overflow-y: auto; }
+    .topbar { display: flex; justify-content: center; align-items: center; padding: 20px; background: #16213e; border-bottom: 2px solid #0a66c2; position: relative; }
+    .topbar h1 { margin: 0; font-size: 2.2rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    #resetPedidosBtn { position: absolute; right: 20px; }
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; padding:20px; max-width:1000px; margin:auto; }
+    .card { background:#16213e; border:1px solid #2a2a3a; border-radius:12px; padding:16px; text-align:center; }
+    .card div:first-child { color:#b8b8b8; font-size:.9rem; }
+    .card div:last-child { font-size:2rem; font-weight:700; margin-top:8px; }
+    table { width: 90%; border-collapse: collapse; margin: 20px auto; background: #16213e; border-radius: 12px; overflow: hidden; }
+    th,td { padding:12px; text-align:left; border-bottom:1px solid #2a2a3a; }
+    th { background:#0a66c2; color:#fff; }
+    tr:hover td { background:rgba(255,255,255,0.05); }
+    .gate { max-width: 1400px; margin: 20px auto; padding: 0 20px; display: flex; gap: 8px; align-items: center; justify-content: center;   /* Centraliza na horizontal */
+  flex-wrap: wrap; }
+    select,button { padding:10px 14px; border-radius:8px; border:none; font-size:1rem; }
+    select { background: #16213e; color: #fff; border: 1px solid #2a2a3a; border-radius: 8px; padding: 10px 14px; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; min-width: 80px; }
+    button { background:#0a66c2; color:#fff; font-weight:600; border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.2); cursor:pointer; transition:all 0.2s ease; }
+    button:hover { background:linear-gradient(270deg,#0a66c2,#1db954); transform:translateY(-2px); }
+    #resetPedidosBtn { background:#e53e3e; }
+    #resetPedidosBtn:hover { background:linear-gradient(270deg,#e53e3e,#ff6b6b); }
+    .export-buttons { display: flex; justify-content: center; gap: 10px; padding: 10px; margin-top: 10px; }
+.export-buttons button { padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; }
+    .export-buttons button { padding: 12px 20px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; border: none; }
+    #exportExcel { background: #1db954; color: #fff; }
+    #exportExcel:hover { background: #17a34a; }
+    #exportPDF { background: #e53e3e; color: #fff; }
+    #exportPDF:hover { background: #c53030; }
+    select:hover { border-color: #0a66c2; }
+    select:focus { outline: none; border-color: #0a66c2; box-shadow: 0 0 6px rgba(10,102,194,0.6); }
+    option { background: #16213e; color: #fff; }
+    #resetPedidosBtn { margin-left: auto; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>📊 Dashboard de Pedidos Extras</h1>
+    <button id="resetPedidosBtn">Resetar Pedidos</button>
+  </div>
+
+  <div class="gate">
+    <label for="unidadeSelect">Selecione a unidade de saúde:</label>
+    <select id="unidadeSelect"><option value="">Todas</option></select>
+    <button id="confirmarUnidade">Carregar</button>
+
+    <!-- Ajuste: Últimos X dias com select -->
+    <span>Últimos</span>
+    <select id="diasFiltro"></select>
+    <span>dias</span>
+  </div>
+
+  
+
+  <section class="cards">
+    <div class="card"><div>Total de pedidos em 2025</div><div id="kpiTotal">—</div></div>
+    <div class="card"><div>Hoje</div><div id="kpiHoje">—</div></div>
+    <div class="card"><div>Últimos <span id="diasSelecionados">7</span> dias</div><div id="kpiXd">—</div></div>
+  </section>
+
+  
+  <div style="padding:20px; max-width:1400px; margin:auto; text-align:center;">
+    <input type="text" id="pesquisaItem" placeholder="Pesquisar por item..." 
+           style="padding:10px; width:50%; border-radius:8px; border:1px solid #2a2a3a; background:#16213e; color:#fff;">
+  </div>
+
+  <div style="padding:20px; max-width:1400px; margin:auto;">
+    <table>
+      <thead><tr>
+        <th>Responsável</th><th>Unidade de Saúde</th><th>Item</th><th>Quantidade</th><th>Unidade de Controle</th><th>Data</th>
+      </tr></thead>
+      <tbody id="tabelaPedidos">
+        <tr><td colspan="6" style="text-align:center;">Selecione uma unidade para carregar os pedidos...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="export-buttons">
+    <button id="exportExcel">Exportar Excel</button>
+    <button id="exportPDF">Exportar PDF</button>
+  </div>
+
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdB4pI610z1rplKmfAHct7CmGD0vmBg3U",
+      authDomain: "almoxarifadobotucatu-5e03d.firebaseapp.com",
+      projectId: "almoxarifadobotucatu-5e03d",
+      storageBucket: "almoxarifadobotucatu-5e03d.firebasestorage.app",
+      messagingSenderId: "828951000388",
+      appId: "1:828951000388:web:06dbe3cb5764872e7b1311"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const unidadeSelect = document.getElementById("unidadeSelect");
+    const confirmarBtn = document.getElementById("confirmarUnidade");
+    const tabela = document.getElementById("tabelaPedidos");
+    const diasFiltro = document.getElementById("diasFiltro");
+
+    // preencher select de dias 0-30
+    for (let i = 1; i <= 30; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i;
+      if (i === 30) opt.selected = true; // padrão 30 dias
+      diasFiltro.appendChild(opt);
+    }
+
+    function toDate(any){ if(!any) return null; if(any.seconds) return new Date(any.seconds*1000); return new Date(any); }
+
+    async function carregarUnidades(){
+      const snapshot = await getDocs(collection(db,"pedidos"));
+      unidadeSelect.innerHTML = '<option value="">Todas</option>'; // limpa antes
+      const unidades = new Set();
+      snapshot.forEach(docSnap => { const u=docSnap.data().unidade; if(u) unidades.add(u); });
+      [...unidades].forEach(u=>{ const opt=document.createElement("option"); opt.value=u; opt.textContent=u; unidadeSelect.appendChild(opt); });
+    }
+
+    async function carregarPedidos(unidade){
+      const snapshot = await getDocs(collection(db,"pedidos"));
+      const pedidos = [];
+      const seen = new Set(); // para deduplicar
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if(!data.itens) return;
+        data.itens.forEach(item => {
+          const row = {
+            id: docSnap.id,
+            solicitante:data.solicitante||"—",
+            unidade:data.unidade||"—",
+            item:item.nome||"—",
+            quantidade:item.quantidade||"—",
+            unidadeControle:item.unidadeControle||"—",
+            data:toDate(data.data)
+          };
+          const key = docSnap.id+"|"+row.solicitante+"|"+row.unidade+"|"+row.item+"|"+row.quantidade+"|"+row.unidadeControle+"|"+(row.data?row.data.getTime():"");
+          if(!seen.has(key)){ seen.add(key); pedidos.push(row); }
+        });
+      });
+
+      pedidos.sort((a,b)=>(b.data?.getTime?.()||0)-(a.data?.getTime?.()||0));
+      const filtrados = unidade? pedidos.filter(p=>p.unidade===unidade):pedidos;
+
+      // KPIs por envio
+      const pedidosUnicos = filtrados.filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i);
+
+      document.getElementById("kpiTotal").textContent = pedidosUnicos.length;
+      const hojeKey = new Date().toDateString();
+      document.getElementById("kpiHoje").textContent = pedidosUnicos.filter(p => p.data && p.data.toDateString() === hojeKey).length;
+
+      const dias = parseInt(diasFiltro.value) || 0;
+      document.getElementById("diasSelecionados").textContent = dias;
+      document.getElementById("kpiXd").textContent = pedidosUnicos.filter(p => p.data && (new Date() - p.data) <= dias*24*60*60*1000).length;
+
+      tabela.innerHTML="";
+      filtrados.forEach(p=>{
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td>${p.solicitante}</td><td>${p.unidade}</td><td>${p.item}</td><td>${p.quantidade}</td><td>${p.unidadeControle}</td><td>${p.data?p.data.toLocaleString():"—"}</td>`;
+        tabela.appendChild(tr);
+      });
+    }
+
+    confirmarBtn.addEventListener("click",()=>{ carregarPedidos(unidadeSelect.value); });
+    diasFiltro.addEventListener("change",()=>{ carregarPedidos(unidadeSelect.value); });
+
+    // util: obter linhas visíveis/filtradas da tabela
+    function obterLinhasFiltradas() {
+      const linhas = [];
+      document.querySelectorAll("#tabelaPedidos tr").forEach(tr => {
+        const cols = Array.from(tr.querySelectorAll("td")).map(td=>td.innerText);
+        if(cols.length !== 6) return; // ignora cabeçalhos/placeholders
+        const display = window.getComputedStyle(tr).display;
+        if (display === "none") return; // ignora linhas ocultas (filtro por item)
+        linhas.push(cols);
+      });
+      return linhas;
+    }
+
+    
+    // exportar Excel (apenas pedidos filtrados)
+    document.getElementById("exportExcel").addEventListener("click", ()=>{
+      const unidadeSelecionada = document.getElementById("unidadeSelect").value || "Todas";
+      const wb = XLSX.utils.book_new();
+      const headers = ["Responsável","Unidade de Saúde","Item","Quantidade","Unidade de Controle","Data"];
+      const linhas = obterLinhasFiltradas();
+      const ws = XLSX.utils.aoa_to_sheet([[`Relatório de Pedidos (Filtrados) - Unidade: ${unidadeSelecionada}`], [], headers, ...linhas]);
+      XLSX.utils.book_append_sheet(wb, ws, "Pedidos");
+      XLSX.writeFile(wb, `pedidos_filtrados_${unidadeSelecionada}.xlsx`);
+    });
+
+    
+    // exportar PDF (apenas pedidos filtrados)
+    document.getElementById("exportPDF").addEventListener("click", ()=>{
+      const unidadeSelecionada = document.getElementById("unidadeSelect").value || "Todas";
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(14);
+      doc.text(`Relatório de Pedidos (Filtrados) - Unidade: ${unidadeSelecionada}`, 14, 16);
+
+      const headers = [["Responsável","Unidade de Saúde","Item","Quantidade","Unidade de Controle","Data"]];
+      const rows = obterLinhasFiltradas();
+
+      doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: 25,
+        styles: { fontSize: 10, cellPadding: 3 }
+      });
+
+      doc.save(`pedidos_filtrados_${unidadeSelecionada}.pdf`);
+    });
+
+
+    // inicializar apenas unidades
+    carregarUnidades();
+
+
+    // filtro de pesquisa por item
+    const pesquisaInput = document.getElementById("pesquisaItem");
+    pesquisaInput.addEventListener("keyup", ()=>{
+      const termo = pesquisaInput.value.toLowerCase();
+      document.querySelectorAll("#tabelaPedidos tr").forEach(tr => {
+        const item = tr.children[2]?.innerText.toLowerCase() || "";
+        if(item.includes(termo) || termo === ""){
+          tr.style.display = "";
+        } else {
+          tr.style.display = "none";
+        }
+      });
+    });
+
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+  
+</body>
+</html>

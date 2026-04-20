@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora</title>
+  <link rel="icon" type="image/png" sizes="32x32" href=""> 
+
+  <!-- Flatpickr CSS (tema escuro) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --primary-color: #0a66c2;
+        --primary-hover-color: #004182;
+        --primary-extra-color: #1db954;
+        --danger-color: #e53e3e;
+        --danger-hover-color: #c53030;
+        --background-light: #1a1a2e;
+        --background-white: #16213e;
+        --text-dark: #ffffff;
+        --text-medium: #b8b8b8;
+        --border-light: #2a2a3a;
+        --shadow-light: 0 4px 6px -1px rgba(0,0,0,0.3),0 2px 4px -1px rgba(0,0,0,0.2);
+    }
+
+    body {
+        background-color: var(--background-light);
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--text-dark);
+        padding: 0;
+    }
+
+    .container {
+        background-color: var(--background-white);
+        padding: 40px;
+        border-radius: 18px;
+        box-shadow: var(--shadow-light);
+        max-width: 550px;
+        width: 100%;
+        text-align: center;
+    }
+
+    h1 {
+        color: var(--text-dark);
+        margin-bottom: 30px;
+        font-size: 2.4rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--text-medium);
+        font-size: 1.4rem;
+    }
+
+    .date-picker {
+        position: relative;
+        width: 100%;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .date-picker input {
+        flex: 0 1 auto;
+        max-width: 300px;
+        width: 100%;
+        padding: 18px;
+        padding-right: 50px;
+        font-size: 1.4rem;
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        background-color: var(--background-light);
+        color: var(--text-dark);
+        text-align: center;
+    }
+
+    .calendar-icon {
+        position: absolute;
+        right: calc(50% - 150px + 15px);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.6rem;
+        color: white;
+        cursor: pointer;
+    }
+
+    button {
+        background: var(--primary-color);
+        color: white;
+        padding: 16px 36px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: transform 0.3s, box-shadow 0.3s, background 0.4s ease-in-out;
+        box-shadow: var(--shadow-light);
+    }
+
+    button:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+        background: linear-gradient(270deg, var(--primary-color), var(--primary-hover-color), var(--primary-extra-color));
+        background-size: 600% 600%;
+        animation: gradientShift 6s ease infinite;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .result {
+        margin-top: 25px;
+        padding: 18px;
+        font-size: 1.4rem;
+        background-color: var(--background-light);
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+    }
+
+    /* Botões nos cantos */
+    .corner-btn {
+      position: fixed;
+      top: 10px;
+      z-index: 1000;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 0.8px solid rgba(24,144,255,0.65);
+      background: rgba(0,0,0,0.15);
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 0 0 0.6px rgba(24,144,255,0.35);
+    }
+
+    .corner-left { left: 14px; }
+    .corner-right { right: 14px; }
+
+    .corner-btn:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(10,132,255,0.85);
+      transform: translateY(-1px);
+    }
+
+    .corner-btn:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .corner-left { left: 10px; }
+      .corner-right { right: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="corner-btn corner-left" onclick="history.back()">⬅ Voltar</button>
+  <button id="btnSair" class="corner-btn corner-right" aria-label="Sair" title="Sair">Sair ✕</button>
+  <header id="usuario-logado"></header>
+
+  <div class="container">
+      <h1>45 Dias Úteis Retroativos</h1>
+      <label for="endDate">Data Final:</label>
+      <div class="date-picker">
+          <input type="text" id="endDate" placeholder="dd/mm/aaaa" maxlength="10">
+          <i class="fa-solid fa-calendar-days calendar-icon" id="calendarBtn"></i>
+      </div>
+
+      <button type="button" onclick="calcular()">Calcular</button>
+      <div class="result" id="result"></div>
+  </div>
+
+  <!-- Flatpickr JS + pt-BR -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
+  <script>
+  // Ativa o calendário Flatpickr
+  const fp = flatpickr("#endDate", {
+      dateFormat: "d/m/Y",
+      locale: flatpickr.l10ns.pt,
+      position: "below",
+      allowInput: true
+  });
+
+  document.getElementById("calendarBtn").addEventListener("click", () => { fp.open(); });
+
+  document.getElementById("endDate").addEventListener("input", function(e) {
+      let value = e.target.value.replace(/\D/g, "");
+      if (value.length > 2 && value.length <= 4) value = value.replace(/(\d{2})(\d+)/, "$1/$2");
+      else if (value.length > 4) value = value.replace(/(\d{2})(\d{2})(\d+)/, "$1/$2/$3");
+      e.target.value = value;
+  });
+
+  function parseDateFromInput(value) {
+      if (!value) return null;
+      const parts = value.split('/');
+      if (parts.length !== 3) return null;
+      const [d, m, y] = parts.map(Number);
+      if (!y || !m || !d) return null;
+      return new Date(y, m - 1, d);
+  }
+
+  function calcular() {
+      const endDateInput = document.getElementById('endDate').value;
+      const resultEl = document.getElementById('result');
+
+      if (!endDateInput) { resultEl.textContent = "Por favor, selecione a data final."; return; }
+
+      let currentDate = parseDateFromInput(endDateInput);
+      if (!currentDate || isNaN(currentDate.getTime())) { resultEl.textContent = "Data inválida."; return; }
+
+      let businessDaysCount = 0;
+      let safety = 0;
+      const SAFETY_LIMIT = 10000;
+
+      while (businessDaysCount < 45 && safety < SAFETY_LIMIT) {
+          currentDate.setDate(currentDate.getDate() - 1);
+          const day = currentDate.getDay();
+          if (day !== 0 && day !== 6) businessDaysCount++;
+          safety++;
+      }
+
+      if (safety >= SAFETY_LIMIT) {
+          resultEl.textContent = "Erro ao calcular — limite de iterações atingido.";
+          return;
+      }
+
+      resultEl.textContent = `Data inicial retroativa (45 dias úteis): ${currentDate.toLocaleDateString('pt-BR')}`;
+  }
+
+  // Proteção contra inspeção
+  document.addEventListener('keydown', function(e) {
+      if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.key.toLowerCase() === 'u') ||
+          (e.ctrlKey && e.key.toLowerCase() === 's') ||
+          (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) ||
+          (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'p') ||
+          (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'i')
+      ) { e.preventDefault(); e.stopPropagation(); return false; }
+  });
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  setInterval(function() {
+      if (window.devtoolsOpen) window.location.href = 'about:blank';
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      if (widthThreshold || heightThreshold) window.devtoolsOpen = true;
+  }, 500);
+
+  // BOTÃO SAIR - mesmo do central de pedidos
+  (function(){
+    var sair = document.getElementById("btnSair");
+    if (sair) {
+      sair.addEventListener("click", function(e){
+        e.preventDefault();
+        try { 
+          localStorage.removeItem("loggedInUser");
+          sessionStorage.clear();
+        } catch(_) {}
+        window.location.replace("/");
+      });
+    }
+  })();
+  </script>
+
+  <footer style="position: fixed; bottom: 4px; right: 4px; font-size: 9px; color: #888; background: transparent; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; opacity: 0.75; user-select: none;">
+      © 2025. Todos os direitos reservados.
+  </footer>
+
+</body>
+</html>

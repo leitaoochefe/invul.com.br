@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Controle</title>
+<link rel="icon" type="image/png" sizes="32x32" href="">
+
+<style>
+  :root {
+    --primary-extra-color: #1db954;
+    --primary-color: #0a66c2;
+    --primary-hover-color: #004182;
+    --background-light: #1a1a2e;
+    --background-white: #16213e;
+    --text-dark: #ffffff;
+    --text-medium: #b8b8b8;
+    --border-light: #2a2a3a;
+    --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  body {
+    background-color: var(--background-light);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: none; /* 🔒 escondido até autenticação */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    color: var(--text-dark);
+    text-align: center;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 600px;
+    background-color: var(--background-white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-light);
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--text-dark);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .buttons a, .buttons button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    background: var(--primary-color);
+    box-shadow: var(--shadow-light);
+    transition: transform 0.3s, background 0.3s;
+  }
+
+  .buttons a:hover, .buttons button:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: linear-gradient(270deg, var(--primary-color), var(--primary-hover-color), var(--primary-extra-color));
+    background-size: 600% 600%;
+    animation: gradientShift 6s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  footer {
+    margin-top: 20px;
+    font-size: 9px;
+    color: #888;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    opacity: 0.75;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Painel de Controle</h2>
+  <div class="buttons">
+    <a href="cadastrar.html">Cadastrar Usuário</a>
+    <a href="cadastros.html">Usuários Cadastrados</a>
+    <button id="logoutBtn">Sair</button> <!-- 🔘 Botão de sair -->
+  </div>
+  <h3>Bem-vindo ao Painel</h3>
+  <footer>© 2025. Todos os direitos reservados.</footer>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+  // Configuração do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCdB4pI610z1rplKmfAHct7CmGD0vmBg3U",
+    authDomain: "almoxarifadobotucatu-5e03d.firebaseapp.com",
+    projectId: "almoxarifadobotucatu-5e03d",
+    storageBucket: "almoxarifadobotucatu-5e03d.firebasestorage.app",
+    messagingSenderId: "828951000388",
+    appId: "1:828951000388:web:06dbe3cb5764872e7b1311"
+  };
+
+  // Inicializa Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Verifica autenticação
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.replace("paineldecontrole.html"); // 🔄 redireciona se não logado
+    } else {
+      document.body.style.display = "flex";
+    }
+  });
+
+  // Botão de sair
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      // Limpa cache e dados locais
+      localStorage.clear();
+      sessionStorage.clear();
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        for (let key of keys) {
+          await caches.delete(key);
+        }
+      }
+      // Redireciona para painel de controle
+      window.location.replace("paineldecontrole.html");
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+  });
+</script>
+
+</body>
+</html>

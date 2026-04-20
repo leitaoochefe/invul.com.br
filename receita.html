@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Assistente de Prescrição • CIMED</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+:root {
+  --amarelo-cimed:#ffd900;
+  --preto:#0f0f0f;
+  --preto-sec:#1a1a1a;
+  --cinza:#6b7280;
+  --cinza-claro:#e5e7eb;
+  --card:#ffffff;
+}
+
+*{box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--preto),var(--preto-sec));
+  padding:30px;
+  color:#1f2937;
+}
+
+.container{max-width:1150px;margin:auto;}
+
+.form-box,.receita-box{
+  background:#fff;
+  padding:32px;
+  border-radius:22px;
+  margin-bottom:30px;
+  box-shadow:0 25px 50px rgba(0,0,0,0.25);
+}
+
+h2{
+  text-align:center;
+  font-weight:700;
+  font-size:26px;
+  color:var(--preto);
+  margin-bottom:20px;
+}
+
+label{
+  font-weight:600;
+  font-size:14px;
+  margin-top:12px;
+  color:#374151;
+  display:block;
+}
+
+input,select{
+  width:100%;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid var(--cinza-claro);
+  margin-bottom:12px;
+  font-size:15px;
+  background:#fafafa;
+  transition:.2s;
+}
+
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--azul);
+  box-shadow:0 0 0 3px rgba(14,122,196,.15);
+  background:#fff;
+}
+
+button{
+  padding:14px 22px;
+  background:linear-gradient(135deg,var(--preto),var(--preto-sec));
+  color:var(--amarelo-cimed);
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 24px rgba(0,0,0,.25);
+}
+
+.medicamento-bloco{
+  border:1px solid var(--cinza-claro);
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:18px;
+  background:#fff;
+  position:relative;
+}
+
+.remover{
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:#b91c1c;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.sugestoes{
+  display:none;
+  position:absolute;
+  background:#fff;
+  border:1px solid var(--cinza-claro);
+  width:92%;
+  max-height:160px;
+  overflow-y:auto;
+  border-radius:14px;
+  z-index:1000;
+  box-shadow:0 15px 30px rgba(0,0,0,.15);
+}
+
+.sugestoes div{
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.sugestoes div:hover{
+  background:#fff7cc;
+}
+
+.receita{
+  width:210mm;
+  min-height:297mm;
+  border:2px solid #000;
+  padding:18mm;
+  margin:0 auto 10mm auto;
+  font-family:"Times New Roman",serif;
+  position:relative;
+}
+
+.prescricao{
+  white-space:pre-line;
+  line-height:1.6;
+  height:160mm;
+}
+
+.btn-print{
+  width:240px!important;
+  margin:20px auto 0 auto!important;
+  display:block!important;
+}
+
+.check-continuo{
+  width:18px;
+  height:18px;
+  accent-color:var(--preto);
+}
+
+@media print{
+  body *{visibility:hidden;}
+  .receita,.receita *{visibility:visible;}
+  .receita{position:absolute;top:0;left:0;}
+}
+
+.via-label{
+  position:absolute;
+  top:10mm;
+  right:15mm;
+  font-size:11px;
+  font-style:italic;
+  color:#333;
+  display:none;
+}
+
+.identificacao-boxes{
+  display:none;
+  margin-top:12mm;
+  font-size:12px;
+}
+
+.identificacao-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10mm;
+}
+
+.ident-box{
+  border:1px solid #000;
+  padding:5mm;
+  height:48mm;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+
+.ident-box h4{
+  margin:0 0 4mm 0;
+  font-size:12px;
+  text-align:center;
+}
+
+.ident-box .linha{
+  border-bottom:1px solid #000;
+  margin-bottom:3mm;
+  height:12px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="form-box">
+<h2>Assistente de Prescrição • CIMED</h2>
+
+<label>Hospital / Clínica</label>
+<input id="hospital">
+
+<label>Paciente</label>
+<input id="paciente">
+
+<label>Tipo de Receita</label>
+<select id="tipoReceita" style="width:100%;padding:10px;border-radius:10px;border:1px solid #cfd8dc;margin-bottom:10px;">
+  <option value="SIMPLES">Receituário Simples</option>
+  <option value="CONTROLE">Receituário de Controle Especial</option>
+</select>
+
+<div id="medicamentosContainer"></div>
+
+<button onclick="adicionarMedicamento()">➕ Adicionar medicamento</button>
+
+<label>CRM</label>
+<input id="crm">
+
+<br><br>
+<button onclick="gerarReceita()">Gerar Receita</button>
+</div>
+
+<div class="receita-box" id="receitaContainer">
+<div class="receita" id="receitaOriginal">
+<div class="via-label" id="viaLabel">1ª VIA – FARMÁCIA</div>
+
+<div style="text-align:center;font-weight:700;" id="hospitalOut"></div>
+<div style="text-align:center;font-weight:700;" id="tipoReceitaOut"></div>
+
+<hr>
+
+Paciente: <span id="pacienteOut"></span>
+<hr>
+
+<strong>PRESCRIÇÃO:</strong>
+<div class="prescricao" id="prescricaoOut"></div>
+
+<div style="display:flex;justify-content:space-between;margin-top:10mm;">
+  <div>Data: <span id="dataOut"></span></div>
+  <div>CRM: <span id="crmOut"></span></div>
+</div>
+
+<div class="identificacao-boxes">
+  <div class="identificacao-grid">
+    <div class="ident-box">
+      <h4>IDENTIFICAÇÃO DO COMPRADOR</h4>
+      Nome:<div class="linha"></div>
+      Ident.:_______________________Órgão Emissor:<div class="linha"></div>
+      End.:<div class="linha"></div>
+      Cidade:____________________ UF:_____<br>
+      Telefone:<div class="linha"></div>
+    </div>
+
+    <div class="ident-box">
+      <h4>IDENTIFICAÇÃO DO FORNECEDOR</h4>
+      <div style="margin-top:20mm;font-size:11px;">
+        ASSINATURA DO FARMACÊUTICO ______________<br>
+        DATA ___/___/____
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<button class="btn-print" onclick="window.print()">Imprimir</button>
+</div>
+
+</div>
+
+<script>
+const medicamentosLista = [
+{nome:"Aciclovir 200mg", forma:"comprimido"},
+{nome:"Aciclovir 50MG/G – Creme Bisnaga c/ 10G – Uso Tópico", forma:"tubo"},
+{nome:"Ácido Acético 15% - Frasco 50 ML", forma:"frasco"},
+{nome:"Ácido Acético 3% - Frasco 10ML – Manipulado", forma:"frasco"},
+{nome:"Ácido Acético 5% - Frasco 10ML – Manipulado", forma:"frasco"},
+{nome:"Ácido acetilsalicílico 100mg", forma:"comprimido"},
+{nome:"Ácido acetilsalicílico 500mg", forma:"comprimido"},
+{nome:"Ácido fólico 5mg", forma:"comprimido"},
+{nome:"Ácido Tricloroacético 80% – Frasco 10ML - Manipulado", forma:"frasco"},
+{nome:"Adrenalina 1mg/ml", forma:"ampola"},
+{nome:"Água destilada estéril - Ampola 10ml", forma:"ampola"},
+{nome:"Agulha para aplicação de insulina caneta 0,23 x 04 mm", forma:"unidade"},
+{nome:"Albendazol 400mg - Comprimido mastigável", forma:"comprimido"},
+{nome:"Albendazol 400mg solução oral - Frasco 10ml", forma:"frasco"},
+{nome:"Alcatrão Mineral (Fn) 10MG/G (1%) - Tubo 50G – Uso Dermatológico – Manipulado", forma:"tubo"},
+{nome:"Alendronato de sódio tri-hidratado 91,37mg (equivalente 70mg de Ácido Alendrônico)", forma:"comprimido"},
+{nome:"Algestona acetofenida 150mg/ml + estradiol, enantato 10mg/ml - Ampola 1ml", forma:"ampola"},
+{nome:"Alopurinol 100mg", forma:"comprimido"},
+{nome:"Aminofilina 100mg", forma:"comprimido"},
+{nome:"Aminofilina 24mg/ml - Ampola 10ml", forma:"ampola"},
+{nome:"Amiodarona 50mg/ml - Ampola 3ml", forma:"ampola"},
+{nome:"Amiodarona, cloridrato 200mg", forma:"comprimido"},
+{nome:"Amoxicilina 250Mg/5Ml + Clavulanato De Potássio 62,5Mg/5Ml", forma:"frasco"},
+{nome:"Amoxicilina 250mg/5ml suspensão - Frasco 150ml", forma:"frasco"},
+{nome:"Amoxicilina 500mg", forma:"comprimido"},
+{nome:"Amoxicilina 500mg + clavulanato de potássio 125mg", forma:"comprimido"},
+{nome:"Ampicilina 250mg/5ml suspensão - Frasco 60ml", forma:"frasco"},
+{nome:"Ampicilina 500mg", forma:"comprimido"},
+{nome:"Anlodipino, besilato 5mg", forma:"comprimido"},
+{nome:"Aparelho de HGT (teste de Glicemia)", forma:"unidade"},
+{nome:"Atenolol 25mg", forma:"comprimido"},
+{nome:"Atropina, sulfato 0,50 mg/ml - Ampola 1ml", forma:"ampola"},
+{nome:"Azitromicina di-hidratada 500mg", forma:"comprimido"},
+{nome:"Azitromicina suspensão 200mg", forma:"frasco"},
+{nome:"Beclometasona, dipropionato 200mcg spray oral - Frasco 200 doses", forma:"frasco"},
+{nome:"Beclometasona, dipropionato 250mcg spray oral - Frasco 200 doses", forma:"frasco"},
+{nome:"Beclometasona, dipropionato 50mcg spray nasal - Frasco 200 doses", forma:"frasco"},
+{nome:"Benzilpenicilina benzatina 1.200.000 UI - Frasco-Ampola - IM", forma:"frasco-amp"},
+{nome:"Benzilpenicilina benzatina 600.000 Ui - Frasco-Ampola - IM", forma:"frasco-amp"},
+{nome:"Benzilpenicilina procaína 300.000 UI + benzilpenicilina potássica 100.000 UI - IM", forma:"frasco-amp"},
+{nome:"Benzoato de benzila 250mg/ml solução - Frasco 100ml", forma:"frasco"},
+{nome:"Benzoíla, Peróxido 25MG (2,5%) Base Aquosa", forma:"tubo"},
+{nome:"Betametasona, acetato de 3mg/ml + betametasona , fosfato dissódico 3,945mg/ml (equivalente a 3mg/ml de betametasona) suspensão injetavel - Ampola 1ml", forma:"ampola"},
+{nome:"Bicarbonato de sódio 8,4% - Ampola 10 ml", forma:"ampola"},
+{nome:"Bromoprida 10mg", forma:"comprimido"},
+{nome:"Budesonida 32 MCG/Dose Suspensão Spray Estéril", forma:"frasco"},
+{nome:"Budesonida 50 MCG/Dose Suspensão Spray Estéril", forma:"frasco"},
+{nome:"Bultilbrometo de escopolamina 10 mg + dipirona 250 mg - Comprimido revestido", forma:"comprimido"},
+{nome:"Butilbrometo de escopolamina + dipirona sódica - Uso Im/Iv - Ampola 5 ml", forma:"ampola"},
+{nome:"Butilbrometo de escopolamina 10 mg", forma:"comprimido"},
+{nome:"Butilbrometo de escopolamina 10 mg/ml gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Butilbrometo de escopolamina 20 mg/ml - Ampola 1 ml", forma:"ampola"},
+{nome:"Butilbrometo de escopolamina 6,67 mg/ml + dipirona 333,4 ml gotas - Frasco 20ml", forma:"frasco"},
+{nome:"Caneta para Injeção de Insulina refil - Modelo Hfzsqi.", forma:"caneta"},
+{nome:"Captopril 25mg", forma:"comprimido"},
+{nome:"Carbonato de cálcio 1.250mg (equivalente a 500mg de cálcio elementar) + 200ui colecalciferol (vitamina d) - Comprimidos revestidos - uso adulto", forma:"comprimido"},
+{nome:"Carbonato de cálcio 1.250mg (equivalente a 500mg de cálcio elementar) + 400ui colecalciferol (vitamina d) - Comprimidos revestidos - uso adulto e pediátrico", forma:"comprimido"},
+{nome:"Carbonato de Calcio 1250 mg (Equivalente à 500 mg De Cálcio)", forma:"comprimido"},
+{nome:"Carbonato de Cálcio 1500 mg (Equivalente a 600 mg de Cálcio) + Colecalciferol (Vit. D3) 400 Ui Comprimido Mastigável", forma:"comprimido"},
+{nome:"Carvão Vegetal Ativado 250mg", forma:"comprimido"},
+{nome:"Carvedilol 12,5mg - uso adulto", forma:"comprimido"},
+{nome:"Carvedilol 6,25mg - uso adulto", forma:"comprimido"},
+{nome:"Cefalexina 250 mg/5 ml suspensão - Frasco 60 ml", forma:"frasco"},
+{nome:"Cefalexina 500 mg", forma:"comprimido"},
+{nome:"Ceftriaxona Sodica 1G - EV - Frasco- Ampola", forma:"ampola"},
+{nome:"Ceftriaxona Sodica 1G - IM - Frasco- Ampola", forma:"ampola"},
+{nome:"Ceftriaxona Sódica 500 MG - IM - Frasco-Ampola", forma:"ampola"},
+{nome:"Cetoconazol 200 mg", forma:"comprimido"},
+{nome:"Cetoconazol creme 20 mg/g - Tubo 30 g", forma:"tubo"},
+{nome:"Cetoconazol shampoo 20 mg/g - Frasco 100 ml", forma:"frasco"},
+{nome:"Cetoprofeno 100mg - Frasco-Ampola - IV", forma:"ampola"},
+{nome:"Cetoprofeno 100mg Ampola 2ml - IM", forma:"ampola"},
+{nome:"Cetotifeno, fumarato xarope - Frasco120 ml - uso adulto e pediátrico", forma:"frasco"},
+{nome:"Cimetidina 200mg", forma:"comprimido"},
+{nome:"Cinarizina 25mg", forma:"comprimido"},
+{nome:"Ciprofloxacino, cloridrato 500mg", forma:"comprimido"},
+{nome:"Claritromicina 500mg –  Comprimido revestido – Uso Adulto", forma:"comprimido"},
+{nome:"Clindamicina, Cloridrato 338,457mg - Cápsula", forma:"cápsula"},
+{nome:"Clonidina, cloridrato 0,150mg", forma:"comprimido"},
+{nome:"Clopidogrel, Bissulfato de 75 MG (Requisitado na SMS)", forma:"comprimido"},
+{nome:"Cloreto de potássio 19,1% Ampola 10ml", forma:"ampola"},
+{nome:"Cloreto de Sódio 20% Amp 10 ml", forma:"ampola"},
+{nome:"Clortalidona 25 MG", forma:"comprimido"},
+{nome:"Colagenase 0,6 Ui + Cloranfenicol 0,01 G – Tubo 30 G", forma:"tubo"},
+{nome:"Colagenase 0,6 Ui/G – Tubo 30 G (Requer autorização Comissão Curativo)", forma:"tubo"},
+{nome:"Cold cream - Tubo 50G (manipulado)", forma:"tubo"},
+{nome:"Complexo B", forma:"comprimido"},
+{nome:"Complexo B - Ampola 2ML", forma:"ampola"},
+{nome:"Deltametrina loção 0,02% - Frasco 100 ml", forma:"frasco"},
+{nome:"Deltametrina shampoo - Frasco 100 ml", forma:"frasco"},
+{nome:"Deslanosídeo 0,2mg/ml - Ampola 2ml", forma:"ampola"},
+{nome:"Dexametasona 1MG/ML – Suspensão Oftálmica Estéril - Frasco 5 ml", forma:"frasco"},
+{nome:"Dexametasona 4mg comprimido - uso adulto e pediátrico", forma:"comprimido"},
+{nome:"Dexametasona, acetato (amp i) + cianocobalamina + tiamina, cloridrato + piridoxina, cloridrato (amp ii) - Ampola 1 ml - IM (Dexa-Citoneurim)", forma:"ampola"},
+{nome:"Dexametasona, acetato creme dermatológico 1 mg/g - Tubo 10 g", forma:"tubo"},
+{nome:"Dexametasona, Fosfáto Dissódico 4MG/ML - Frasco 2,5 ML", forma:"ampola"},
+{nome:"Dexclorfeniramina, maleato 2 mg", forma:"comprimido"},
+{nome:"Dexclorfeniramina, maleato 2 mg/5 ml suspensão - Frasco 100 ml", forma:"frasco"},
+{nome:"Dextrano 70 1 mg/ml + Hipromelose 3 mg/ml - Frasco 15 ml", forma:"frasco"},
+{nome:"Diclofenaco de sódio 75mg - Ampola 3ml", forma:"ampola"},
+{nome:"Diclofenaco sódico 50mg", forma:"comprimido"},
+{nome:"Digoxina 0,25mg", forma:"comprimido"},
+{nome:"Dimenidrinato + piridoxina, 50/10mg cloridrato", forma:"comprimido"},
+{nome:"Dimenidrinato + piridoxina, cloridrato - Frasco 20 ml", forma:"frasco"},
+{nome:"Dimenidrinato + piridoxina, cloridrato + glicose + frutose Ampola 10 ml - EV", forma:"ampola"},
+{nome:"Dimenidrinato + piridoxina, cloridrato Ampola 1 ml - IM", forma:"ampola"},
+{nome:"Dipirona sódica 500 mg/ml - Ampola 2 ml", forma:"ampola"},
+{nome:"Dipirona sódica 500 mg/ml gotas - Frasco 10 ml", forma:"gotas"},
+{nome:"Dipirona Sódica 500mg", forma:"comprimido"},
+{nome:"Dobutamina, cloridrato 12,5 mg/ml - Ampola 20 ml", forma:"ampola"},
+{nome:"Domperidona suspensão 1 mg/ml - Frasco 100 ml", forma:"frasco"},
+{nome:"Dopamina, cloridrato 5 mg/ml - Ampola 10 ml", forma:"ampola"},
+{nome:"Doxazosina, Mesilato 2mg", forma:"comprimido"},
+{nome:"Doxiciclina, Cloridrato 100mg", forma:"comprimido"},
+{nome:"Enalapril, maleato 10mg", forma:"comprimido"},
+{nome:"Enalapril, maleato 20mg", forma:"comprimido"},
+{nome:"Enalapril, maleato 5mg", forma:"comprimido"},
+{nome:"Eritromicina, estolato 250 mg/ 5 ml - Frasco 60 ml", forma:"frasco"},
+{nome:"Espironolactona 25mg", forma:"comprimido"},
+{nome:"Estriol 1Mg/G Creme Vaginal Bisnaga 20G ou Mais", forma:"tubo"},
+{nome:"Estrogênios Conjugados 0,3mg", forma:"drágeas"},
+{nome:"Estrogênios Conjugados 0,625 MG/G Creme - Bisnaga 26G", forma:"tubo"},
+{nome:"Finasterida 5mg", forma:"comprimido"},
+{nome:"Fitas para hemoglicoteste - (HGT)", forma:"unidade"},
+{nome:"Fluconazol 150mg", forma:"cápsula"},
+{nome:"Furosemida 10 mg/ml - Ampola 2ml", forma:"ampola"},
+{nome:"Furosemida 40mg", forma:"comprimido"},
+{nome:"Glibenclamida 5mg", forma:"comprimido"},
+{nome:"Glicerol 1,44G - supositório – uso retal Pediátrico", forma:"unidade"},
+{nome:"Glicerol 120Mg/Ml Solução - Frasco 250Ml + Sonda Uso Retal", forma:"frasco"},
+{nome:"Glicerol 2,68G - supositório – uso retal Adulto", forma:"unidade"},
+{nome:"Gliclazida 60mg", forma:"comprimido"},
+{nome:"Glicose 25% - Ampola 10 ml", forma:"ampola"},
+{nome:"Glicose 50% - Ampola 10 ml", forma:"ampola"},
+{nome:"Heparina Sódica 5.000 Ui/0,25 Ml - Ampola 0,25 Ml", forma:"ampola"},
+{nome:"Hidralazina Cloridrato 20 MG – Ampola 1 ML", forma:"ampola"},
+{nome:"Hidralazina, Cloridrato 25Mg - Drágea", forma:"drágea"},
+{nome:"Hidroclorotiazida 25mg", forma:"comprimido"},
+{nome:"Hidrocortisona + neomicina, sulfato + polimixina b, sulfato gotas - Frasco 10 ml", forma:"frasco"},
+{nome:"Hidrocortisona, Acetato 10mg - Tubo 20mg", forma:"tubo"},
+{nome:"Hidrocortisona, succinato 500 mg - Ampola 4ml", forma:"ampola"},
+{nome:"Hidróxido de alumínio 60 mg/ml suspensão - Frasco 150 ml", forma:"frasco"},
+{nome:"Hidróxido de magnésio 80 mg/ml suspensão - Frasco 120 ml", forma:"frasco"},
+{nome:"Hidróxido de potássio 10% - Frasco 10 ML - Manupulado", forma:"frasco"},
+{nome:"Ibuprofeno 300mg", forma:"comprimido"},
+{nome:"Ibuprofeno 50mg/ml gotas - Frasco 30ml", forma:"frasco"},
+{nome:"Imiquimode 50Mg/G - Sache 250Mg", forma:"sachê"},
+{nome:"Insulina Humana - NPH 100 ui/ml - Refil 3 ml - Uso SC - Uso Adulto e Pediátrico", forma:"refil"},
+{nome:"Insulina Humana - Regular 100 ui/ml - Refil 3 ml - Uso SC - Uso Adulto e Pediátrico", forma:"refil"},
+{nome:"Insulina humana NPH 100 UI/ML - Caneta descartável 3ml", forma:"caneta"},
+{nome:"Insulina humana NPH 100 UI/ML - Frasco 10 ml - uso adulto e pediátrico", forma:"frasco"},
+{nome:"Insulina humana regular 100 UI/ML - Caneta descartável 3ml", forma:"caneta"},
+{nome:"Insulina humana regular 100 UI/ML - Frasco 10 ml - uso adulto e pediátrico", forma:"frasco"},
+{nome:"Ipratrópio, brometo gotas - Frasco 20ml", forma:"frasco"},
+{nome:"Isossorbida 10 mg/ml - Ampola 1ml", forma:"ampola"},
+{nome:"Isossorbida, dinitrato 10mg", forma:"comprimido"},
+{nome:"Isossorbida, dinitrato 5mg", forma:"comprimido"},
+{nome:"Isossorbida, Mononitrato 20 mg", forma:"comprimido"},
+{nome:"Ivermectina 6mg", forma:"comprimido"},
+{nome:"Lactulose 667 Mg/Ml - Frasco 120ml", forma:"frasco"},
+{nome:"Lanceta para hgt", forma:"unidade"},
+{nome:"Levodopa (l-dopa) 100 mg + benserazida, cloridrato 28,5 mg (equivalente à 25 mg de benserazida) -  birranhurado - Uso adulto acima de 25 anos).", forma:"comprimido"},
+{nome:"Levodopa (l-dopa) 100mg + benserazida, cloridrato 28,5 mg (equivalente à 25 mg de benserazida) - cápsula HBS - Uso adulto acima de 25 anos).", forma:"cápsula"},
+{nome:"Levodopa (l-dopa) 200 mg + benserazida, cloridrato 57 mg (equivalente à 50 mg de benserazida) - Uso adulto acima de 25 anos.", forma:"comprimido"},
+{nome:"Levodopa 250 mg + carbidopa 27 mg (equivalente à 25mg de cardidopa) - Uso adulto", forma:"comprimido"},
+{nome:"Levonorgestrel 0,75 mg cartela 2 comprimidos", forma:"cartela"},
+{nome:"Levonorgestrel+ etinilestradiol cartela 21 comprimidos", forma:"cartela"},
+{nome:"Levotiroxina sódica 100mcg", forma:"comprimido"},
+{nome:"Levotiroxina Sódica 12,5mcg", forma:"comprimido"},
+{nome:"Levotiroxina sódica 25mcg", forma:"comprimido"},
+{nome:"Levotiroxina Sódica 37,5mcg", forma:"comprimido"},
+{nome:"Levotiroxina sódica 50mcg", forma:"comprimido"},
+{nome:"Lidocaína gel 100 mg/5g - Tubo 30g", forma:"tubo"},
+{nome:"Lidocaína, cloridrato 2% com vasoconstritor - carpule ou tubete 1,8ml.", forma:"unidade"},
+{nome:"Lidocaína, cloridrato 2% sem vasoconstritor - carpule ou tubete 1,8ml.", forma:"unidade"},
+{nome:"Loratadina 1 mg/ml suspensão oral - Frasco 100 ml", forma:"frasco"},
+{nome:"Loratadina 10mg", forma:"comprimido"},
+{nome:"Losartana potássica 50mg", forma:"comprimido"},
+{nome:"Mebendazol 100mg", forma:"comprimido"},
+{nome:"Mebendazol suspensão 100 mg/5 ml - Frasco 30 ml", forma:"frasco"},
+{nome:"Medroxiprogesterona, acetato 150mg/ml", forma:"ampola"},
+{nome:"Medroxiprogesterona, acetato 25mg/ml", forma:"ampola"},
+{nome:"Metformina, cloridrato 500mg", forma:"comprimido"},
+{nome:"Metformina, cloridrato 850mg", forma:"comprimido"},
+{nome:"Metildopa 250mg", forma:"comprimido"},
+{nome:"Metoclopramida, cloridrato 10mg", forma:"comprimido"},
+{nome:"Metoclopramida, cloridrato 5 mg/ml - Ampola 2 ml", forma:"ampola"},
+{nome:"Metoclopramida, cloridrato gotas - Frasco 10 ml", forma:"frasco"},
+{nome:"Metoprolol Tartarato 1mg/ml – Ampola 5ml", forma:"ampola"},
+{nome:"Metoprolol, succinato 50mg", forma:"comprimido"},
+{nome:"Metronidazol 250mg", forma:"comprimido"},
+{nome:"Metronidazol 40 mg/ml suspensão oral - Frasco 100 ml", forma:"frasco"},
+{nome:"Metronidazol 500 mg/5g - Tubo 50g - c/ 10 aplicadores", forma:"tubo"},
+{nome:"Neomicina, sulfato + bacitracina zínica - Tubo 10g", forma:"tubo"},
+{nome:"Nifedipina 20mg", forma:"comprimido"},
+{nome:"Nimesulida 100mg", forma:"comprimido"},
+{nome:"Nimesulida 50mg/ml - Frasco 15ml", forma:"frasco"},
+{nome:"Nistatina 100.000 Ui/4 g creme vaginal - Tubo 60g", forma:"tubo"},
+{nome:"Nistatina 100.000 Ui/ml suspensão oral - Frasco 50 ml", forma:"frasco"},
+{nome:"Nitrofurantoína 100 mg – Cápsulas", forma:"cápsulas"},
+{nome:"Noretisterona 0,35 mg - Cartela 35 comprimidos", forma:"cartela"},
+{nome:"Noretisterona, enantato + estradiol, valerato (50 + 5 mg/ml)", forma:"ampola"},
+{nome:"Norfloxacina 400mg", forma:"comprimido"},
+{nome:"Óleo mineral 100% - Frasco 100 ml", forma:"frasco"},
+{nome:"Omeprazol 20mg - Cápsula", forma:"cápsula"},
+{nome:"Paracetamol 200 mg/ml gotas - Frasco15 ml", forma:"frasco"},
+{nome:"Paracetamol 500mg", forma:"comprimido"},
+{nome:"Pasta D’água óxido de zinco 25% (250mg/g) - Bisnaga 80g", forma:"tubo"},
+{nome:"Permanganato de potássio 100mg", forma:"comprimido"},
+{nome:"Permetrina 50mg/ml - Loção Cremosa - Frasco Plástico Opaco 60ml", forma:"frasco"},
+{nome:"Polivitamínico Gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Prednisolona, fosfato sódico 3 mg/ml suspensão - Frasco 100 ml", forma:"frasco"},
+{nome:"Prednisona 20mg", forma:"comprimido"},
+{nome:"Prednisona 5mg", forma:"comprimido"},
+{nome:"Preservativo feminino (RME emitida na Enfermagem)", forma:"unidade"},
+{nome:"Preservativo masculino 49 mm (RME emitida na enfermagem)", forma:"unidade"},
+{nome:"Preservativo masculino 52 mm (RME emitida na enfermagem)", forma:"unidade"},
+{nome:"Prometazina, cloridrato 25 mg/ml - Ampola 2ml", forma:"ampola"},
+{nome:"Prometazina, cloridrato 25mg", forma:"comprimido"},
+{nome:"Propafenona, cloridrato 300mg - Comprimido revestido", forma:"comprimido"},
+{nome:"Propranolol, cloridrato 40 mg", forma:"comprimido"},
+{nome:"Sais para rehidratação oral envelope 27,9 g", forma:"envelope"},
+{nome:"Salbutamol Sulfato 6MG – Solução para nebulização (Inalatório)", forma:"frasco"},
+{nome:"Salbutamol, sulfato 2 mg/5 ml xarope - Frasco 120 ml", forma:"frasco"},
+{nome:"Salbutamol, sulfato spray oral 100 mcg/dose 200 doses", forma:"frasco"},
+{nome:"Secnidazol 1000mg", forma:"comprimido"},
+{nome:"Seringa insulina monobloco 100 UI - agulha 06 x 0,25 (RME emitida na enfermagem)", forma:"unidade"},
+{nome:"Seringa insulina monobloco 50 UI - agulha 06 x 0,25 (RME emitida na enfermagem)", forma:"unidade"},
+{nome:"Simeticona 75 mg/ml gotas - Frasco 15 ml", forma:"frasco"},
+{nome:"Sinvastatina 20mg", forma:"comprimido"},
+{nome:"Sulfadiazina de Prata 1% (10MG/G) Creme Dermatológico - Bisnaga 30g", forma:"tubo"},
+{nome:"Sulfametoxazol - trimetoprim 200/40 mg/5 ml suspensão - Frasco 100 ml", forma:"frasco"},
+{nome:"Sulfametoxazol - trimetoprim 400/80mg", forma:"comprimido"},
+{nome:"Sulfato de magnésio 10% - Ampola 10 ml", forma:"ampola"},
+{nome:"Sulfato ferroso 25 mg/ml gotas - Frasco 30 ml", forma:"frasco"},
+{nome:"Sulfato ferroso 300mg", forma:"comprimido"},
+{nome:"Sulfato ferroso 40mg", forma:"comprimido"},
+{nome:"Tiamazol 10mg", forma:"comprimido"},
+{nome:"Tiamina, cloridrato 300 mg", forma:"comprimido"},
+{nome:"Tiamina, cloridrato+piridoxina, cloridrato=amp I, cianocobalamina 5000 mcg=amp.II (Citoneurin)", forma:"ampola"},
+{nome:"Tiocolchicosídeo 2 mg/ml Ampola 2 ml - Uso Im", forma:"ampola"},
+{nome:"Tobramicina 0,3% colírio - Frasco 5 ml", forma:"frasco"},
+{nome:"Varfarina sódica 5mg", forma:"comprimido"},
+{nome:"Verapamil, Cloridrato 80mg", forma:"comprimido"},
+{nome:"Vildagliptina 50mg", forma:"comprimido"},
+{nome:"Vitamina A+D - Gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Vitamina A+D - Pomada - Tubo 45 g", forma:"tubo"},
+{nome:"Vitamina C 200mg/ml gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Ácido valpróico 250mg - Cápsula", forma:"cápsula"},
+{nome:"Ácido valpróico 250mg/5ml - Frasco 100ml", forma:"frasco"},
+{nome:"Ácido valpróico 500mg - Comprimido revestido", forma:"comprimido"},
+{nome:"Amitriptilina, cloridrato 25mg", forma:"comprimido"},
+{nome:"Biperideno, cloridrato 2mg", forma:"comprimido"},
+{nome:"Carbamazepina 20 mg/ml suspensão - Frasco 100 ml", forma:"frasco"},
+{nome:"Carbamazepina 200 mg", forma:"comprimido"},
+{nome:"Carbonato de lítio 300 mg", forma:"comprimido"},
+{nome:"Clomipramina, cloridrato 25 mg", forma:"comprimido"},
+{nome:"Clonazepam 2 mg", forma:"comprimido"},
+{nome:"Clonazepam 2,5 mg/ml – Solução Oral - Frasco 20 ml", forma:"frasco"},
+{nome:"Clorpromazina 25 mg", forma:"comprimido"},
+{nome:"Clorpromazina, cloridrato 100 mg", forma:"comprimido"},
+{nome:"Diazepan 10 mg", forma:"comprimido"},
+{nome:"Diazepan 5 mg/ml - Ampola 2 ml", forma:"ampola"},
+{nome:"Etomidato 20 Mg - Ampola 10 ml", forma:"ampola"},
+{nome:"Fenitoína 100 mg", forma:"comprimido"},
+{nome:"Fenitoína 50 mg/ml - Ampola 5 ml", forma:"ampola"},
+{nome:"Fenobarbital 100 mg", forma:"comprimido"},
+{nome:"Fenobarbital 4% gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Fentanila, Citrato 0,0785 Mg/Ml - Ampola 10 ml", forma:"ampola"},
+{nome:"Fluoxetina, cloridrato 20 mg - Cápsula", forma:"cápsula"},
+{nome:"Haloperidol 2 mg/ml  - Frasco 20 ml", forma:"frasco"},
+{nome:"Haloperidol 5 mg", forma:"comprimido"},
+{nome:"Haloperidol 5 mg/ml IM - Ampola 1 ml", forma:"ampola"},
+{nome:"Haloperidol, decanoato 70,52 mg/ml - Ampola 1 ml", forma:"ampola"},
+{nome:"Imipramina 25 mg", forma:"comprimido"},
+{nome:"Levomepromazina 4% gotas - Frasco 20 ml", forma:"frasco"},
+{nome:"Midazolan 5mg/ml - Ampola 3 ml", forma:"ampola"},
+{nome:"Naltrexona, cloridrato 50 mg", forma:"comprimido"},
+{nome:"Nitrazepan 5 mg", forma:"comprimido"},
+{nome:"Nortriptilina, cloridrato 25 mg", forma:"comprimido"},
+{nome:"Sertralina, cloridrato 50 mg", forma:"comprimido"},
+{nome:"Tioridazina, cloridrato 100 mg", forma:"comprimido"},
+];
+
+const sugestoesPosologia = {
+
+  comprimido: [
+    "Tomar 1 comprimido a cada 8 horas",
+    "Tomar 1 comprimido a cada 12 horas",
+    "Tomar 1 comprimido uma vez ao dia",
+    "Tomar 2 comprimidos ao dia"
+  ],
+
+  cápsula: [
+    "Tomar 1 cápsula a cada 8 horas",
+    "Tomar 1 cápsula a cada 12 horas",
+    "Tomar 1 cápsula uma vez ao dia"
+  ],
+
+  ml: [
+    "Tomar 5 ml a cada 8 horas",
+    "Tomar 10 ml a cada 12 horas",
+    "Tomar 5 ml a cada 6 horas",
+    "Tomar 10 ml uma vez ao dia"
+  ],
+
+  gotas: [
+    "Tomar 20 gotas a cada 8 horas",
+    "Tomar 30 gotas a cada 12 horas",
+    "Tomar 10 gotas a cada 6 horas"
+  ],
+
+  ampola: [
+    "Aplicar 1 ampola IM",
+    "Aplicar 1 ampola IV",
+    "Aplicar 1 ampola SC"
+  ],
+
+  tubo: [
+    "Uso tópico: aplicar 2 vezes ao dia",
+    "Uso tópico: aplicar 3 vezes ao dia"
+  ],
+
+  spray: [
+    "Aplicar 1 jato em cada narina 1 vez ao dia",
+    "Aplicar 1 jato em cada narina 2 vezes ao dia"
+  ],
+
+  frasco: [
+    "Tomar 5 ml a cada 8 horas",
+    "Tomar 10 ml a cada 12 horas"
+  ],
+
+  suspensão: [
+    "Tomar 5 ml a cada 8 horas",
+    "Tomar 10 ml a cada 12 horas"
+  ],
+
+  creme: [
+    "Uso tópico: aplicar fina camada 2 vezes ao dia",
+    "Uso tópico: aplicar fina camada 3 vezes ao dia",
+    "Uso externo. Não ingerir"
+  ]
+
+};
+
+function obterProximoIndice() {
+    let usados = [];
+    document.querySelectorAll(".medicamento-bloco").forEach(div=>{
+        usados.push(parseInt(div.dataset.indice));
+    });
+
+    let i = 1;
+    while (usados.includes(i)) i++;
+    return i;
+}
+
+function adicionarMedicamento() {
+    const indice = obterProximoIndice();
+
+    const div = document.createElement("div");
+    div.className = "medicamento-bloco";
+    div.dataset.indice = indice;
+    div.id = "bloco" + indice;
+
+    // Conteúdo do bloco inteiro, incluindo o botão
+    div.innerHTML = `
+        <button class="remover" id="remover${indice}">❌</button>
+
+        <label>Medicamento ${indice}</label>
+        <input id="med${indice}" 
+               onfocus="mostrarMedicamentos(this)" 
+               oninput="mostrarMedicamentos(this)">
+        <div class="sugestoes" id="listaMed${indice}"></div>
+
+        <label>Modelo de posologia (editável)</label>
+        <input id="pos${indice}" 
+               onfocus="mostrarPosologia(this)" 
+               oninput="mostrarPosologia(this)">
+        <div class="sugestoes" id="listaPos${indice}"></div>
+
+        <div id="blocoCalculo${indice}">
+            <label>Duração (dias)</label>
+            <input type="number" id="dur${indice}" oninput="calcularQuantidade(${indice})">
+            <label>Quantidade</label>
+            <input type="number" id="qtd${indice}" readonly>
+        </div>
+
+        <div id="opcoes${indice}" style="display:none;margin-top:10px;">
+            <label>Duração</label>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span>Por</span>
+                <input type="number" id="diasLivre${indice}" style="width:70px;">
+                <span>dias</span>
+                <label style="display:flex;align-items:center;gap:4px;margin-left:10px;">
+                    <input type="checkbox" id="sintoma${indice}"> se dor ou febre
+                </label>
+            </div>
+        </div>
+
+        <label style="display:flex;align-items:center;gap:4px;margin-top:10px;font-weight:600;">
+            Uso contínuo
+            <input type="checkbox" id="cont${indice}" class="check-continuo">
+        </label>
+    `;
+
+    // Adiciona o bloco ao container
+    document.getElementById("medicamentosContainer").appendChild(div);
+
+    // Agora pega o botão e adiciona o listener
+    document.getElementById("remover" + indice).addEventListener("click", () => {
+        div.remove();
+    });
+}
+
+function mostrarMedicamentos(input){
+    let id=input.id.replace("med","");
+    let lista=document.getElementById("listaMed"+id);
+    lista.innerHTML="";
+    let valor=input.value.toLowerCase();
+
+    medicamentosLista.forEach(item=>{
+        if(!valor || item.nome.toLowerCase().includes(valor)){
+            let div=document.createElement("div");
+            div.textContent=item.nome;
+
+            div.onclick=()=>{
+                input.value=item.nome;
+                input.dataset.forma=item.forma;
+
+                let blocoCalculo = document.getElementById("blocoCalculo"+id);
+                let opcoes = document.getElementById("opcoes"+id);
+
+                if(item.forma==="comprimido" || item.forma==="cápsula"){
+                    blocoCalculo.style.display="block";
+                    opcoes.style.display="none";
+                }else{
+                    blocoCalculo.style.display="none";
+                    opcoes.style.display="block";
+                }
+
+                lista.style.display="none";
+            }
+
+            lista.appendChild(div);
+        }
+    });
+
+    lista.style.display="block";
+}
+
+function mostrarPosologia(input){
+    let id = input.id.replace("pos","");
+    let lista = document.getElementById("listaPos"+id);
+    lista.innerHTML = "";
+
+    let medInput = document.getElementById("med"+id);
+    let forma = medInput.dataset.forma;
+
+    if(!forma || !sugestoesPosologia[forma]){
+        lista.style.display = "none";
+        return;
+    }
+
+    let valor = input.value.toLowerCase();
+    let sugestoes = sugestoesPosologia[forma];
+    let encontrou = false;
+
+    sugestoes.forEach(item=>{
+        if(!valor || item.toLowerCase().includes(valor)){
+            encontrou = true;
+
+            let div = document.createElement("div");
+            div.textContent = item;
+
+            div.onclick = ()=>{
+                input.value = item;
+                lista.style.display = "none";
+
+                // calcula apenas para comprimido e cápsula
+                if(forma==="comprimido" || forma==="cápsula"){
+                    calcularQuantidade(id);
+                }
+            }
+
+            lista.appendChild(div);
+        }
+    });
+
+    lista.style.display = encontrou ? "block" : "none";
+}
+
+function calcularQuantidade(id){
+    let pos=document.getElementById("pos"+id).value;
+    let dur=parseInt(document.getElementById("dur"+id).value);
+    if(!pos||!dur) return;
+
+    let doses=0;
+    if(pos.includes("8 horas")) doses=3;
+    else if(pos.includes("12 horas")) doses=2;
+    else if(pos.includes("uma vez")) doses=1;
+    else if(pos.includes("2x")) doses=2;
+    else if(pos.includes("24 horas")) doses=1;
+
+    document.getElementById("qtd"+id).value=doses*dur;
+}
+
+function numeroPorExtenso(num){
+    const u=["zero","um","dois","três","quatro","cinco","seis","sete","oito","nove"];
+    const e=["dez","onze","doze","treze","quatorze","quinze","dezesseis","dezessete","dezoito","dezenove"];
+    const d=["","","vinte","trinta","quarenta","cinquenta","sessenta","setenta","oitenta","noventa"];
+    if(num<10)return u[num];
+    if(num<20)return e[num-10];
+    let dez=Math.floor(num/10);
+    let un=num%10;
+    return d[dez]+(un?" e "+u[un]:"");
+}
+
+function gerarReceita() {
+
+  document.getElementById("hospitalOut").innerText =
+    document.getElementById("hospital").value;
+
+  document.getElementById("pacienteOut").innerText =
+    document.getElementById("paciente").value;
+
+  document.getElementById("crmOut").innerText =
+    document.getElementById("crm").value;
+
+  const tipo = document.getElementById("tipoReceita").value;
+
+  document.getElementById("tipoReceitaOut").innerText =
+    tipo === "CONTROLE"
+      ? "RECEITUÁRIO DE CONTROLE ESPECIAL"
+      : "RECEITUÁRIO SIMPLES";
+
+  document.getElementById("dataOut").innerText =
+    new Date().toLocaleDateString("pt-BR");
+
+  let texto = "";
+
+  document.querySelectorAll(".medicamento-bloco").forEach((bloco, index) => {
+    const i = bloco.dataset.indice;
+
+    const med = document.getElementById("med" + i)?.value;
+    const pos = document.getElementById("pos" + i)?.value;
+    const qtd = document.getElementById("qtd" + i)?.value;
+    const durLivre = document.getElementById("diasLivre" + i)?.value;
+    const sintoma = document.getElementById("sintoma" + i)?.checked;
+    const continuo = document.getElementById("cont" + i)?.checked;
+
+    if (!med || !pos) return;
+
+    texto += (index + 1) + ") " + med;
+    if (continuo) texto += " [USO CONTÍNUO]";
+    texto += "\n";
+    texto += pos + "\n";
+
+    if (!continuo && qtd) {
+      texto += "Quantidade: " + qtd + " (" + numeroPorExtenso(parseInt(qtd)) + ").\n";
+    } else if (!continuo && durLivre) {
+      texto += "Usar por " + durLivre + " dias";
+      if (sintoma) texto += " se dor ou febre";
+      texto += ".\n";
+    }
+
+    texto += "\n";
+  });
+
+  
+document.getElementById("prescricaoOut").innerText = texto;
+
+// ===== CONTROLE ESPECIAL: 2 VIAS + IDENTIFICAÇÃO =====
+document.querySelectorAll(".receita.copia").forEach(r => r.remove());
+document.querySelectorAll(".identificacao-boxes").forEach(b => b.style.display = "none");
+// esconder sempre
+document.querySelectorAll(".via-label").forEach(v => v.style.display = "none");
+
+// apenas controle especial
+if (tipo === "CONTROLE") {
+  document.getElementById("viaLabel").innerText = "1ª VIA – FARMÁCIA";
+  document.getElementById("viaLabel").style.display = "block";
+}
+document.getElementById("viaLabel").innerText = "1ª VIA – FARMÁCIA";
+
+if (tipo === "CONTROLE") {
+  document.querySelectorAll(".identificacao-boxes").forEach(b => b.style.display = "block");
+
+  const clone = document.getElementById("receitaOriginal").cloneNode(true);
+  clone.classList.add("copia");
+  clone.querySelector(".via-label").innerText = "2ª VIA – PACIENTE";
+  clone.querySelectorAll(".identificacao-boxes").forEach(b => b.style.display = "block");
+  clone.style.marginTop = "20mm";
+
+  document.getElementById("receitaContainer")
+    .insertBefore(clone, document.querySelector(".btn-print"));
+}
+
+}
+
+adicionarMedicamento();
+// FECHAR LISTAS DE SUGESTÃO AO CLICAR FORA
+document.addEventListener("click", function(e){
+    document.querySelectorAll(".sugestoes").forEach(lista=>{
+        if(!lista.contains(e.target) && 
+           !e.target.closest("input")){
+            lista.style.display = "none";
+        }
+    });
+});
+
+</script>
+<footer style="
+  width:100%;
+  background:#0f0f0f;
+  padding:12px 15px;
+  font-size:12px;
+  color:#ffd900;
+  text-align:center;
+">
+  ⚠️ Este sistema não realiza diagnóstico nem recomenda tratamento ou posologia.<br>
+  As opções de posologia são apenas modelos de texto padronizados para facilitar a digitação,
+  cabendo ao profissional validar e editar conforme o caso clínico.
+  <br><br>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>RxMedicPRO • Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --azul-escuro: #0b4f8a;
+  --azul: #0e7ac4;
+  --verde: #22c55e;
+  --cinza: #6b7280;
+  --cinza-claro: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b4f8a, #0e7ac4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  padding: 32px 30px;
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 320px;
+  max-width: 100%;
+}
+
+h1 {
+  text-align: center;
+  font-size: 22px;
+  color: var(--azul-escuro);
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: var(--cinza);
+  margin-bottom: 28px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  font-size: 13px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--cinza-claro);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, var(--azul), var(--verde));
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ✅ ESTILO QUE DEIXA O RxMedicPRO ELEGANTE */
+.footer span {
+  color: var(--azul-escuro);
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <div class="logo">
+    <img src="./LogoRxMedicPRO.png" alt="RxMedicPRO">
+  </div>
+
+  <h1>Acesso Profissional</h1>
+  <p class="subtitle">Assistente inteligente de prescrição médica</p>
+
+  <div class="form-group">
+    <label>CRM</label>
+    <input type="text" id="crm" placeholder="Ex: CRM6786-SP">
+  </div>
+
+  <div class="form-group">
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="Digite sua senha">
+  </div>
+
+  <button onclick="fazerLogin()">Entrar no Sistema</button>
+
+  <div class="footer">
+    © 2026 <span>RxMedicPRO</span> • Plataforma Médica Profissional
+  </div>
+</div>
+
+<!-- 🔥 FIREBASE COMPAT -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<!-- 🔐 BCRYPT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+
+<script>
+const bcrypt = dcodeIO.bcrypt;
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCdB4pI610z1rplKmfAHct7CmGD0vmBg3U",
+  authDomain: "almoxarifadobotucatu-5e03d.firebaseapp.com",
+  projectId: "almoxarifadobotucatu-5e03d",
+  storageBucket: "almoxarifadobotucatu-5e03d.firebasestorage.app",
+  messagingSenderId: "828951000388",
+  appId: "1:828951000388:web:06dbe3cb5764872e7b1311"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ✅ LOGIN POR CRM (SEM DIFERENCIAR MAIÚSCULAS)
+function fazerLogin() {
+
+  const usuario = document.getElementById("crm").value.trim().toUpperCase();
+  const senha   = document.getElementById("senha").value.trim();
+
+  if (!usuario || !senha) {
+    alert("Preencha CRM e senha");
+    return;
+  }
+
+  // 🚫 bloqueia SMS
+  if (!usuario.startsWith("CRM")) {
+    alert("Acesso permitido apenas para CRM");
+    return;
+  }
+
+  db.collection("usuarios").doc(usuario).get()
+    .then(doc => {
+
+      if (!doc.exists) {
+        alert("CRM não cadastrado");
+        return;
+      }
+
+      const dados = doc.data();
+
+      if (dados.ativo === false) {
+        alert("CRM desativado");
+        return;
+      }
+
+      const senhaOk = bcrypt.compareSync(
+        senha,
+        dados.senhaHash
+      );
+
+      if (!senhaOk) {
+        alert("Senha incorreta");
+        return;
+      }
+
+      sessionStorage.setItem("logado", "true");
+      localStorage.setItem("usuarioLogado", usuario);
+      localStorage.setItem("nomeUsuario", dados.nome || usuario);
+
+      window.location.href =
+        "https://almoxarifadobotucatu.netlify.app/receita";
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Erro ao autenticar");
+    });
+}
+</script>
+
+</body>
+</html>
