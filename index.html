@@ -15,13 +15,13 @@
 }
 
 body {
-  height: 100vh; /* trava altura */
+  height: 100vh;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
-  overflow: hidden; /* 🔥 remove qualquer scroll */
+  overflow: hidden;
 }
 
 /* CONTAINER */
@@ -29,18 +29,26 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  justify-content: center;
 
   width: 100%;
-  height: 100%; /* ocupa toda a tela */
-
-  justify-content: center;
+  height: 100vh;
 }
 
-/* LOGO (MAXIMIZADA SEM QUEBRAR) */
+/* 🔥 BLOCO QUE CONTROLA O LIMITE TOTAL */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  max-height: 100vh;
+  width: 100%;
+}
+
+/* LOGO (AGORA USA TODO ESPAÇO DISPONÍVEL) */
 .logo {
-  width: min(95vw, 1400px);
-  max-height: 72vh; /* 🔥 ponto ideal pra não gerar scroll */
+  width: min(96vw, 1500px);
+  max-height: 78vh; /* 🔥 aumentamos com segurança */
   object-fit: contain;
 
   opacity: 0;
@@ -52,8 +60,8 @@ body {
 .line {
   width: 90px;
   height: 1px;
-  margin-top: 18px;
-  margin-bottom: 14px;
+  margin-top: 16px;
+  margin-bottom: 12px;
   background: linear-gradient(90deg, transparent, #fff, transparent);
 
   opacity: 0;
@@ -103,11 +111,11 @@ body {
 
 /* RESPONSIVO */
 @media (max-width: 900px) {
-  .logo { max-height: 68vh; }
+  .logo { max-height: 74vh; }
 }
 
 @media (max-width: 600px) {
-  .logo { max-height: 64vh; }
+  .logo { max-height: 70vh; }
 
   .text {
     font-size: 12px;
@@ -122,9 +130,11 @@ body {
 <body>
 
 <div class="container">
-  <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-  <div class="line"></div>
-  <div class="text">EM BREVE</div>
+  <div class="content">
+    <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
+    <div class="line"></div>
+    <div class="text">EM BREVE</div>
+  </div>
 </div>
 
 <div id="devtools-overlay">
