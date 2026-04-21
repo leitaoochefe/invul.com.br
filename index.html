@@ -46,7 +46,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-gap:14px;
+gap:16px;
 width:100%;
 height:100vh;
 text-align:center;
@@ -76,7 +76,42 @@ animation:fadeIn .8s ease forwards;
 animation-delay:1.4s;
 }
 
-/* TEXTO */
+/* TEXTO PREMIUM */
+
+.invul-text{
+
+font-size:clamp(14px,1.3vw,20px);
+letter-spacing:4px;
+text-transform:uppercase;
+font-weight:500;
+
+background:linear-gradient(
+90deg,
+#8b0000 0%,
+#ff1a1a 50%,
+#8b0000 100%
+);
+
+background-size:200% auto;
+color:transparent;
+background-clip:text;
+-webkit-background-clip:text;
+
+text-shadow:
+0 0 8px rgba(255,0,0,.35),
+0 0 18px rgba(255,0,0,.15);
+
+opacity:0;
+
+animation:
+shineRed 3.5s linear infinite,
+fadeIn .9s ease forwards;
+
+animation-delay:1.6s;
+
+}
+
+/* TEXTO EM BREVE */
 
 .text{
 font-size:clamp(11px,1vw,14px);
@@ -98,7 +133,7 @@ background-clip:text;
 
 opacity:0;
 animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
-animation-delay:1.6s;
+animation-delay:1.9s;
 }
 
 /* EMAIL FOOTER */
@@ -178,6 +213,11 @@ to{opacity:1;}
 100%{background-position:200% center;}
 }
 
+@keyframes shineRed{
+0%{background-position:-200% center;}
+100%{background-position:200% center;}
+}
+
 /* MOBILE */
 
 @media (max-width:600px){
@@ -190,6 +230,11 @@ max-height:68vh;
 .text{
 font-size:10px;
 letter-spacing:5px;
+}
+
+.invul-text{
+font-size:13px;
+letter-spacing:3px;
 }
 
 .line{
@@ -213,6 +258,10 @@ bottom:8px;
 <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
 
 <div class="line"></div>
+
+<div class="invul-text">
+Seja invul
+</div>
 
 <div class="text">
 EM BREVE
