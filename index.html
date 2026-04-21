@@ -18,6 +18,7 @@ gtag('config', 'G-HZTLMTJCPY');
 
 <meta name="description" content="INVUL - Corpo forte - mente invulnerável.">
 
+<!-- FAVICON -->
 <link rel="icon" type="image/png" sizes="48x48" href="/navegador.png">
 <link rel="shortcut icon" href="/navegador.png">
 <link rel="apple-touch-icon" href="/navegador.png">
@@ -42,6 +43,8 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
+/* CONTAINER */
+
 .container{
 display:flex;
 flex-direction:column;
@@ -52,6 +55,8 @@ width:100%;
 height:100vh;
 text-align:center;
 }
+
+/* LOGO MAIOR E NÍTIDA */
 
 .logo{
 width:min(98vw,1800px);
@@ -65,6 +70,8 @@ opacity:0;
 animation:logoFade 1.4s ease forwards;
 animation-delay:.6s;
 }
+
+/* TEXTO SEJA INVUL */
 
 .invul-text{
 
@@ -99,6 +106,8 @@ animation-delay:1.4s;
 
 }
 
+/* LINHA */
+
 .line{
 width:80px;
 height:1px;
@@ -109,10 +118,9 @@ animation:fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
 
+/* TEXTO EM BREVE */
+
 .text{
-
-margin-top:18px;
-
 font-size:clamp(11px,1vw,14px);
 letter-spacing:6px;
 text-transform:uppercase;
@@ -134,6 +142,8 @@ opacity:0;
 animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
 animation-delay:1.9s;
 }
+
+/* EMAIL FOOTER */
 
 .footer{
 position:fixed;
@@ -171,10 +181,14 @@ fill:#fff;
 opacity:.9;
 }
 
+/* HOVER */
+
 .container:hover .logo{
 transform:translateY(-1px);
 transition:.4s ease;
 }
+
+/* OVERLAY DEVTOOLS */
 
 #devtools-overlay{
 position:fixed;
@@ -190,6 +204,8 @@ font-size:13px;
 letter-spacing:2px;
 text-transform:uppercase;
 }
+
+/* ANIMAÇÕES */
 
 @keyframes logoFade{
 to{opacity:1;}
@@ -209,6 +225,8 @@ to{opacity:1;}
 100%{background-position:200% center;}
 }
 
+/* MOBILE */
+
 @media (max-width:600px){
 
 .logo{
@@ -219,7 +237,6 @@ max-height:70vh;
 .text{
 font-size:10px;
 letter-spacing:5px;
-margin-top:14px;
 }
 
 .invul-text{
