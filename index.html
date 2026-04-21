@@ -18,7 +18,7 @@ gtag('config', 'G-HZTLMTJCPY');
 
 <meta name="description" content="INVUL - Corpo forte - mente invulnerável.">
 
-<!-- FAVICON CORRETO PARA GOOGLE -->
+<!-- FAVICON -->
 <link rel="icon" type="image/png" sizes="48x48" href="/navegador.png">
 <link rel="shortcut icon" href="/navegador.png">
 <link rel="apple-touch-icon" href="/navegador.png">
@@ -56,12 +56,15 @@ height:100vh;
 text-align:center;
 }
 
-/* LOGO */
+/* LOGO MAIOR E NÍTIDA */
 
 .logo{
-width:min(96vw,1600px);
-max-height:78vh;
+width:min(98vw,1800px);
+max-height:84vh;
 object-fit:contain;
+
+image-rendering:-webkit-optimize-contrast;
+image-rendering:high-quality;
 
 opacity:0;
 animation:logoFade 1.4s ease forwards;
@@ -228,7 +231,7 @@ to{opacity:1;}
 
 .logo{
 width:96vw;
-max-height:68vh;
+max-height:70vh;
 }
 
 .text{
