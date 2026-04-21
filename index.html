@@ -18,6 +18,7 @@ gtag('config', 'G-HZTLMTJCPY');
 
 <meta name="description" content="INVUL - Corpo forte - mente invulnerável.">
 
+<!-- FAVICON -->
 <link rel="icon" type="image/png" sizes="48x48" href="/navegador.png">
 <link rel="shortcut icon" href="/navegador.png">
 <link rel="apple-touch-icon" href="/navegador.png">
@@ -42,6 +43,8 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
+/* CONTAINER */
+
 .container{
 display:flex;
 flex-direction:column;
@@ -51,15 +54,6 @@ gap:16px;
 width:100%;
 height:100vh;
 text-align:center;
-}
-
-/* WRAP LOGO */
-
-.logo-wrap{
-position:relative;
-display:flex;
-align-items:center;
-justify-content:center;
 }
 
 /* LOGO */
@@ -77,36 +71,15 @@ animation:logoFade 1.4s ease forwards;
 animation-delay:.6s;
 }
 
-/* GLOW INVULNERÁVEL */
-
-.invulneravel-glow{
-
-position:absolute;
-
-bottom:31%;
-left:56%;
-
-transform:translateX(-50%);
-
-width:180px;
-height:22px;
-
-background:rgba(255,0,0,.9);
-
-filter:blur(16px);
-
-opacity:.55;
-
-animation:invulGlow 2.6s ease-in-out infinite alternate;
-
-pointer-events:none;
-}
+/* BLOCO QUE SOBE */
 
 .invul-text,
 .line,
 .text{
 transform:translateY(-22px);
 }
+
+/* TEXTO SEJA INVUL */
 
 .invul-text{
 
@@ -138,7 +111,10 @@ shineRed 3.5s linear infinite,
 fadeIn .9s ease forwards;
 
 animation-delay:1.4s;
+
 }
+
+/* LINHA */
 
 .line{
 width:80px;
@@ -149,6 +125,8 @@ opacity:0;
 animation:fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
+
+/* TEXTO EM BREVE */
 
 .text{
 font-size:clamp(11px,1vw,14px);
@@ -172,6 +150,8 @@ opacity:0;
 animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
 animation-delay:1.9s;
 }
+
+/* EMAIL FOOTER */
 
 .footer{
 position:fixed;
@@ -209,10 +189,14 @@ fill:#fff;
 opacity:.9;
 }
 
+/* HOVER */
+
 .container:hover .logo{
 transform:translateY(-1px);
 transition:.4s ease;
 }
+
+/* OVERLAY DEVTOOLS */
 
 #devtools-overlay{
 position:fixed;
@@ -228,6 +212,8 @@ font-size:13px;
 letter-spacing:2px;
 text-transform:uppercase;
 }
+
+/* ANIMAÇÕES */
 
 @keyframes logoFade{
 to{opacity:1;}
@@ -247,19 +233,7 @@ to{opacity:1;}
 100%{background-position:200% center;}
 }
 
-@keyframes invulGlow{
-
-from{
-opacity:.35;
-filter:blur(12px);
-}
-
-to{
-opacity:.75;
-filter:blur(22px);
-}
-
-}
+/* MOBILE */
 
 @media (max-width:600px){
 
@@ -296,10 +270,7 @@ bottom:8px;
 
 <div class="container">
 
-<div class="logo-wrap">
 <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
-<div class="invulneravel-glow"></div>
-</div>
 
 <div class="invul-text">
 Seja invul
@@ -369,3 +340,5 @@ overlay.style.display='none';
 
 </body>
 </html>
+
+aplique o glow somente no invulnerável
