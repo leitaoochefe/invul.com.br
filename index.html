@@ -32,63 +32,44 @@ box-sizing:border-box;
 body{
 height:100vh;
 background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
 font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
 /* CONTAINER */
-
 .container{
+position:relative;
+width:100vw;
+height:100vh;
 display:flex;
-flex-direction:column;
 align-items:center;
 justify-content:center;
-gap:14px;
-width:100%;
-height:100vh;
-text-align:center;
 }
 
-/* LOGO */
-
+/* LOGO 🔥 FULL SCREEN */
 .logo{
-width:min(92vw,1900px);
-max-height:82vh;
+position:absolute;
+width:100vw;
+height:100vh;
 object-fit:contain;
-
 opacity:0;
 animation:logoFade 1.4s ease forwards;
-animation-delay:.6s;
-}
-
-/* LINHA */
-
-.line{
-width:80px;
-height:1px;
-background:linear-gradient(90deg,transparent,#fff,transparent);
-
-opacity:0;
-animation:fadeIn .8s ease forwards;
-animation-delay:1.4s;
 }
 
 /* TEXTO */
-
 .text{
-font-size:clamp(11px,1vw,14px);
+position:absolute;
+bottom:70px;
+font-size:12px;
 letter-spacing:6px;
 text-transform:uppercase;
 font-weight:500;
 
 background:linear-gradient(
 90deg,
-rgba(255,255,255,.25) 0%,
-rgba(255,255,255,1) 50%,
-rgba(255,255,255,.25) 100%
+rgba(255,255,255,.25),
+rgba(255,255,255,1),
+rgba(255,255,255,.25)
 );
 
 background-size:200% auto;
@@ -97,74 +78,45 @@ background-clip:text;
 -webkit-background-clip:text;
 
 opacity:0;
-animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
+animation:shineMove 3s linear infinite, fadeIn .8s ease forwards;
 animation-delay:1.6s;
 }
 
 /* EMAIL FOOTER */
-
 .footer{
 position:fixed;
-bottom:10px;
+bottom:12px;
 left:50%;
 transform:translateX(-50%);
-
 display:flex;
 align-items:center;
 gap:10px;
-
 font-size:13px;
 letter-spacing:1px;
-
 opacity:0;
 animation:fadeIn 1s ease forwards;
-animation-delay:2.3s;
+animation-delay:2.2s;
 }
 
 .footer a{
 color:#fff;
 text-decoration:none;
-opacity:.9;
+opacity:.85;
 transition:.3s;
 }
 
 .footer a:hover{
-opacity:.6;
+opacity:.5;
 }
 
 .email-icon{
 width:18px;
 height:18px;
 fill:#fff;
-opacity:.9;
-}
-
-/* HOVER */
-
-.container:hover .logo{
-transform:translateY(-1px);
-transition:.4s ease;
-}
-
-/* OVERLAY DEVTOOLS */
-
-#devtools-overlay{
-position:fixed;
-inset:0;
-background:#000;
-color:#fff;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:9999;
-
-font-size:13px;
-letter-spacing:2px;
-text-transform:uppercase;
+opacity:.85;
 }
 
 /* ANIMAÇÕES */
-
 @keyframes logoFade{
 to{opacity:1;}
 }
@@ -179,21 +131,12 @@ to{opacity:1;}
 }
 
 /* MOBILE */
-
 @media (max-width:600px){
-
-.logo{
-width:96vw;
-max-height:70vh;
-}
 
 .text{
 font-size:10px;
 letter-spacing:5px;
-}
-
-.line{
-width:60px;
+bottom:60px;
 }
 
 .footer{
@@ -212,8 +155,6 @@ bottom:8px;
 
 <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
 
-<div class="line"></div>
-
 <div class="text">
 EM BREVE
 </div>
@@ -231,48 +172,6 @@ contato@invul.com.br
 </a>
 
 </div>
-
-<div id="devtools-overlay">
-acesso restrito
-</div>
-
-<script>
-
-document.addEventListener('contextmenu',e=>e.preventDefault());
-
-document.addEventListener('keydown',function(e){
-
-if(e.key==='F12') e.preventDefault();
-
-if(e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase()))
-e.preventDefault();
-
-if(e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))
-e.preventDefault();
-
-});
-
-(function(){
-
-const threshold=160;
-const overlay=document.getElementById('devtools-overlay');
-
-setInterval(()=>{
-
-const widthDiff=window.outerWidth-window.innerWidth;
-const heightDiff=window.outerHeight-window.innerHeight;
-
-if(widthDiff>threshold || heightDiff>threshold){
-overlay.style.display='flex';
-}else{
-overlay.style.display='none';
-}
-
-},500);
-
-})();
-
-</script>
 
 </body>
 </html>
