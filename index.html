@@ -14,61 +14,279 @@ gtag('config', 'G-HZTLMTJCPY');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>INVUL — Em breve</title>
+<title>INVUL</title>
+
+<meta name="description" content="INVUL - Corpo forte - mente invulnerável.">
+
+<link rel="icon" type="image/png" sizes="48x48" href="/navegador.png">
+<link rel="shortcut icon" href="/navegador.png">
+<link rel="apple-touch-icon" href="/navegador.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 
-body{
-background:#000;
+*{
 margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
 height:100vh;
-font-family:Arial, Helvetica, sans-serif;
-color:white;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+font-family:'Inter',sans-serif;
+overflow:hidden;
+}
+
+.container{
+display:flex;
 flex-direction:column;
-}
-
-.logo-container{
-position:relative;
-display:inline-block;
-}
-
-.logo-container img{
-width:460px;
-max-width:90vw;
-display:block;
-position:relative;
-z-index:2;
-}
-
-/* glow vermelho apenas na palavra INVULNERÁVEL */
-
-.logo-container::after{
-content:"";
-position:absolute;
-left:0;
-bottom:0;
+align-items:center;
+justify-content:center;
+gap:16px;
 width:100%;
-height:40%;
-background:radial-gradient(circle at center, rgba(255,0,0,0.7) 0%, rgba(255,0,0,0.4) 40%, transparent 80%);
-filter:blur(20px);
-z-index:1;
+height:100vh;
+text-align:center;
+}
+
+/* WRAP LOGO */
+
+.logo-wrap{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* LOGO */
+
+.logo{
+width:min(98vw,1800px);
+max-height:84vh;
+object-fit:contain;
+
+image-rendering:-webkit-optimize-contrast;
+image-rendering:high-quality;
+
+opacity:0;
+animation:logoFade 1.4s ease forwards;
+animation-delay:.6s;
+}
+
+/* GLOW INVULNERÁVEL */
+
+.invulneravel-glow{
+
+position:absolute;
+
+bottom:31%;
+left:56%;
+
+transform:translateX(-50%);
+
+width:180px;
+height:22px;
+
+background:rgba(255,0,0,.9);
+
+filter:blur(16px);
+
+opacity:.55;
+
+animation:invulGlow 2.6s ease-in-out infinite alternate;
+
 pointer-events:none;
 }
 
-.tagline{
-margin-top:40px;
-font-size:20px;
-letter-spacing:3px;
-opacity:0.85;
+.invul-text,
+.line,
+.text{
+transform:translateY(-22px);
 }
 
-.email{
-margin-top:20px;
-font-size:14px;
-opacity:0.6;
+.invul-text{
+
+font-size:clamp(14px,1.3vw,20px);
+letter-spacing:4px;
+text-transform:uppercase;
+font-weight:500;
+
+background:linear-gradient(
+90deg,
+#8b0000 0%,
+#ff1a1a 50%,
+#8b0000 100%
+);
+
+background-size:200% auto;
+color:transparent;
+background-clip:text;
+-webkit-background-clip:text;
+
+text-shadow:
+0 0 8px rgba(255,0,0,.35),
+0 0 18px rgba(255,0,0,.15);
+
+opacity:0;
+
+animation:
+shineRed 3.5s linear infinite,
+fadeIn .9s ease forwards;
+
+animation-delay:1.4s;
+}
+
+.line{
+width:80px;
+height:1px;
+background:linear-gradient(90deg,transparent,#fff,transparent);
+
+opacity:0;
+animation:fadeIn .8s ease forwards;
+animation-delay:1.6s;
+}
+
+.text{
+font-size:clamp(11px,1vw,14px);
+letter-spacing:6px;
+text-transform:uppercase;
+font-weight:500;
+
+background:linear-gradient(
+90deg,
+rgba(255,255,255,.25) 0%,
+rgba(255,255,255,1) 50%,
+rgba(255,255,255,.25) 100%
+);
+
+background-size:200% auto;
+color:transparent;
+background-clip:text;
+-webkit-background-clip:text;
+
+opacity:0;
+animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
+animation-delay:1.9s;
+}
+
+.footer{
+position:fixed;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+
+display:flex;
+align-items:center;
+gap:10px;
+
+font-size:13px;
+letter-spacing:1px;
+
+opacity:0;
+animation:fadeIn 1s ease forwards;
+animation-delay:2.3s;
+}
+
+.footer a{
+color:#fff;
+text-decoration:none;
+opacity:.9;
+transition:.3s;
+}
+
+.footer a:hover{
+opacity:.6;
+}
+
+.email-icon{
+width:18px;
+height:18px;
+fill:#fff;
+opacity:.9;
+}
+
+.container:hover .logo{
+transform:translateY(-1px);
+transition:.4s ease;
+}
+
+#devtools-overlay{
+position:fixed;
+inset:0;
+background:#000;
+color:#fff;
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+
+font-size:13px;
+letter-spacing:2px;
+text-transform:uppercase;
+}
+
+@keyframes logoFade{
+to{opacity:1;}
+}
+
+@keyframes fadeIn{
+to{opacity:1;}
+}
+
+@keyframes shineMove{
+0%{background-position:-200% center;}
+100%{background-position:200% center;}
+}
+
+@keyframes shineRed{
+0%{background-position:-200% center;}
+100%{background-position:200% center;}
+}
+
+@keyframes invulGlow{
+
+from{
+opacity:.35;
+filter:blur(12px);
+}
+
+to{
+opacity:.75;
+filter:blur(22px);
+}
+
+}
+
+@media (max-width:600px){
+
+.logo{
+width:96vw;
+max-height:70vh;
+}
+
+.text{
+font-size:10px;
+letter-spacing:5px;
+}
+
+.invul-text{
+font-size:13px;
+letter-spacing:3px;
+}
+
+.line{
+width:60px;
+}
+
+.footer{
+font-size:12px;
+bottom:8px;
+}
+
 }
 
 </style>
@@ -76,17 +294,78 @@ opacity:0.6;
 
 <body>
 
-<div class="logo-container">
-<img src="logo.png" alt="INVUL">
+<div class="container">
+
+<div class="logo-wrap">
+<img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
+<div class="invulneravel-glow"></div>
 </div>
 
-<div class="tagline">
+<div class="invul-text">
+Seja invul
+</div>
+
+<div class="line"></div>
+
+<div class="text">
 EM BREVE
 </div>
 
-<div class="email">
-contato@invul.com.br
 </div>
+
+<div class="footer">
+
+<svg class="email-icon" viewBox="0 0 24 24">
+<path d="M2 4h20v16H2V4zm10 9L3 6v12h18V6l-9 7z"/>
+</svg>
+
+<a href="mailto:contato@invul.com.br">
+contato@invul.com.br
+</a>
+
+</div>
+
+<div id="devtools-overlay">
+acesso restrito
+</div>
+
+<script>
+
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+document.addEventListener('keydown',function(e){
+
+if(e.key==='F12') e.preventDefault();
+
+if(e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase()))
+e.preventDefault();
+
+if(e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))
+e.preventDefault();
+
+});
+
+(function(){
+
+const threshold=160;
+const overlay=document.getElementById('devtools-overlay');
+
+setInterval(()=>{
+
+const widthDiff=window.outerWidth-window.innerWidth;
+const heightDiff=window.outerHeight-window.innerHeight;
+
+if(widthDiff>threshold || heightDiff>threshold){
+overlay.style.display='flex';
+}else{
+overlay.style.display='none';
+}
+
+},500);
+
+})();
+
+</script>
 
 </body>
 </html>
