@@ -56,6 +56,15 @@ height:100vh;
 text-align:center;
 }
 
+/* WRAP DA LOGO */
+
+.logo-wrap{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
 /* LOGO */
 
 .logo{
@@ -69,6 +78,31 @@ image-rendering:high-quality;
 opacity:0;
 animation:logoFade 1.4s ease forwards;
 animation-delay:.6s;
+}
+
+/* GLOW DO INVULNERÁVEL */
+
+.invulneravel-glow{
+
+position:absolute;
+
+bottom:22%;
+left:63%;
+
+transform:translateX(-50%);
+
+width:220px;
+height:28px;
+
+background:rgba(255,0,0,.9);
+
+filter:blur(18px);
+
+opacity:.6;
+
+animation:invulGlow 2.6s ease-in-out infinite alternate;
+
+pointer-events:none;
 }
 
 /* BLOCO QUE SOBE */
@@ -233,6 +267,20 @@ to{opacity:1;}
 100%{background-position:200% center;}
 }
 
+@keyframes invulGlow{
+
+from{
+opacity:.35;
+filter:blur(14px);
+}
+
+to{
+opacity:.8;
+filter:blur(26px);
+}
+
+}
+
 /* MOBILE */
 
 @media (max-width:600px){
@@ -270,7 +318,10 @@ bottom:8px;
 
 <div class="container">
 
+<div class="logo-wrap">
 <img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
+<div class="invulneravel-glow"></div>
+</div>
 
 <div class="invul-text">
 Seja invul
