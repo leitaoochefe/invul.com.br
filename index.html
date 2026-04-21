@@ -16,10 +16,9 @@ gtag('config', 'G-HZTLMTJCPY');
 <title>INVUL</title>
 
 <link rel="icon" href="https://invul.netlify.app/navegador.png">
-<link rel="shortcut icon" href="https://invul.netlify.app/navegador.png">
 <link rel="apple-touch-icon" href="https://invul.netlify.app/navegador.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
@@ -31,81 +30,88 @@ box-sizing:border-box;
 
 body{
 height:100vh;
-background:#000;
+overflow:hidden;
+font-family:'Inter',sans-serif;
+color:#fff;
+
+/* fundo estilo Apple launch */
+background:
+radial-gradient(circle at 50% 40%, rgba(255,255,255,0.08), transparent 40%),
+radial-gradient(circle at 50% 120%, rgba(255,255,255,0.05), transparent 50%),
+#000;
+
 display:flex;
 align-items:center;
 justify-content:center;
-font-family:'Inter',sans-serif;
-overflow:hidden;
+}
+
+/* leve textura premium */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:url('https://grainy-gradients.vercel.app/noise.svg');
+opacity:.08;
+mix-blend-mode:overlay;
+pointer-events:none;
 }
 
 /* CONTAINER */
-
 .container{
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-gap:14px;
-width:100%;
-height:100vh;
+gap:18px;
 text-align:center;
+animation:fadeUp 1.8s ease forwards;
+opacity:0;
 }
 
 /* LOGO */
-
 .logo{
-width:min(96vw,1600px);
-max-height:78vh;
+width:min(92vw,1500px);
+max-height:72vh;
 object-fit:contain;
 
+filter:drop-shadow(0 30px 80px rgba(255,255,255,0.08));
+
+transform:scale(1.05);
 opacity:0;
-animation:logoFade 1.4s ease forwards;
-animation-delay:.6s;
+
+animation:logoIn 2.2s ease forwards;
+animation-delay:.4s;
 }
 
-/* LINHA */
-
+/* linha premium */
 .line{
-width:80px;
+width:90px;
 height:1px;
-background:linear-gradient(90deg,transparent,#fff,transparent);
-
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);
 opacity:0;
-animation:fadeIn .8s ease forwards;
-animation-delay:1.4s;
-}
 
-/* TEXTO */
-
-.text{
-font-size:clamp(11px,1vw,14px);
-letter-spacing:6px;
-text-transform:uppercase;
-font-weight:500;
-
-background:linear-gradient(
-90deg,
-rgba(255,255,255,.25) 0%,
-rgba(255,255,255,1) 50%,
-rgba(255,255,255,.25) 100%
-);
-
-background-size:200% auto;
-color:transparent;
-background-clip:text;
--webkit-background-clip:text;
-
-opacity:0;
-animation:shineMove 3.2s linear infinite,fadeIn .8s ease forwards;
+animation:fadeIn 1.5s ease forwards;
 animation-delay:1.6s;
 }
 
-/* EMAIL FOOTER */
+/* texto estilo keynote */
+.text{
+font-size:clamp(11px,1vw,14px);
+letter-spacing:7px;
+text-transform:uppercase;
+font-weight:500;
 
+color:rgba(255,255,255,.75);
+opacity:0;
+
+animation:fadeIn 1.5s ease forwards;
+animation-delay:1.8s;
+}
+
+/* FOOTER */
 .footer{
 position:fixed;
-bottom:10px;
+bottom:18px;
 left:50%;
 transform:translateX(-50%);
 
@@ -117,89 +123,82 @@ font-size:13px;
 letter-spacing:1px;
 
 opacity:0;
-animation:fadeIn 1s ease forwards;
-animation-delay:2.3s;
+animation:fadeIn 2s ease forwards;
+animation-delay:2.4s;
 }
 
 .footer a{
-color:#fff;
+color:rgba(255,255,255,.85);
 text-decoration:none;
-opacity:.9;
-transition:.3s;
+transition:.4s ease;
 }
 
 .footer a:hover{
-opacity:.6;
+color:#fff;
 }
 
 .email-icon{
 width:18px;
 height:18px;
 fill:#fff;
-opacity:.9;
+opacity:.85;
 }
 
-/* HOVER */
-
+/* hover muito sutil */
 .container:hover .logo{
-transform:translateY(-1px);
-transition:.4s ease;
+transform:scale(1.055);
+transition:1.2s ease;
 }
 
-/* OVERLAY DEVTOOLS */
-
+/* DEVTOOLS */
 #devtools-overlay{
 position:fixed;
 inset:0;
 background:#000;
-color:#fff;
 display:none;
 align-items:center;
 justify-content:center;
 z-index:9999;
-
-font-size:13px;
-letter-spacing:2px;
+font-size:12px;
+letter-spacing:3px;
 text-transform:uppercase;
 }
 
 /* ANIMAÇÕES */
-
-@keyframes logoFade{
-to{opacity:1;}
+@keyframes logoIn{
+0%{
+opacity:0;
+transform:scale(1.1);
+filter:blur(10px);
+}
+100%{
+opacity:1;
+transform:scale(1);
+filter:blur(0);
+}
 }
 
 @keyframes fadeIn{
 to{opacity:1;}
 }
 
-@keyframes shineMove{
-0%{background-position:-200% center;}
-100%{background-position:200% center;}
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 /* MOBILE */
+@media(max-width:600px){
 
-@media (max-width:600px){
-
-.logo{
-width:96vw;
-max-height:68vh;
-}
-
-.text{
-font-size:10px;
-letter-spacing:5px;
-}
-
-.line{
-width:60px;
-}
-
-.footer{
-font-size:12px;
-bottom:8px;
-}
+.line{width:60px;}
+.text{font-size:10px;letter-spacing:5px;}
+.footer{font-size:12px;bottom:10px;}
 
 }
 
@@ -210,13 +209,11 @@ bottom:8px;
 
 <div class="container">
 
-<img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL Logo">
+<img class="logo" src="https://invul.netlify.app/invul.png" alt="INVUL">
 
 <div class="line"></div>
 
-<div class="text">
-EM BREVE
-</div>
+<div class="text">EM BREVE</div>
 
 </div>
 
@@ -238,38 +235,32 @@ acesso restrito
 
 <script>
 
+// bloqueios básicos
 document.addEventListener('contextmenu',e=>e.preventDefault());
 
 document.addEventListener('keydown',function(e){
-
 if(e.key==='F12') e.preventDefault();
-
 if(e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase()))
 e.preventDefault();
-
 if(e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))
 e.preventDefault();
-
 });
 
+// detector devtools
 (function(){
-
 const threshold=160;
 const overlay=document.getElementById('devtools-overlay');
 
 setInterval(()=>{
+const w=window.outerWidth-window.innerWidth;
+const h=window.outerHeight-window.innerHeight;
 
-const widthDiff=window.outerWidth-window.innerWidth;
-const heightDiff=window.outerHeight-window.innerHeight;
-
-if(widthDiff>threshold || heightDiff>threshold){
+if(w>threshold || h>threshold){
 overlay.style.display='flex';
 }else{
 overlay.style.display='none';
 }
-
 },500);
-
 })();
 
 </script>
